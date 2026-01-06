@@ -6,6 +6,7 @@ import Script from "next/script";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import QueryProvider from "@/components/QueryProvider";
 
 import { SecurityCheck } from "@/components/SecurityCheck";
 
@@ -39,19 +40,21 @@ export default function RootLayout({
           data-debug="true"
           data-custom-data='{"appName": "YourApp", "version": "1.0.0", "greeting": "hi"}'
         />
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <SecurityCheck />
-          <Navbar />
-          <main className="min-h-screen pt-16">
-            {children}
-          </main>
-          <Footer />
-        </ThemeProvider>
+        <QueryProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <SecurityCheck />
+            <Navbar />
+            <main className="min-h-screen pt-16">
+              {children}
+            </main>
+            <Footer />
+          </ThemeProvider>
+        </QueryProvider>
         <VisualEditsMessenger />
       </body>
     </html>

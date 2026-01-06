@@ -10,6 +10,8 @@ import Link from 'next/link'
 import { restorePost, removePost } from '@/app/voices/actions'
 import { cn } from '@/lib/utils'
 import { MarkNotificationsAsRead } from '@/components/MarkNotificationsAsRead'
+import { useProfile } from '@/hooks/useProfile'
+import { DashboardSkeleton } from '@/components/ui/skeletons'
 
 export default function PresidentDashboard() {
     const [activeTab, setActiveTab] = useState<'governance' | 'users' | 'media'>('governance')
@@ -19,6 +21,7 @@ export default function PresidentDashboard() {
     const [flaggedPosts, setFlaggedPosts] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
     const router = useRouter()
+    const { profile, isLoading: isProfileLoading } = useProfile()
     const [isPending, startTransition] = useTransition()
 
     // ... (rest of useEffects)
@@ -43,27 +46,21 @@ export default function PresidentDashboard() {
     // Filter for Mark as Read
 
     useEffect(() => {
+        if (isProfileLoading) return
+
+        if (!profile) {
+            router.push('/login')
+            return
+        }
+
+        if (profile.role !== 'president') {
+            toast.error("Restricted Access")
+            router.push('/')
+            return
+        }
+
         const fetchDashboard = async () => {
             const supabase = createClient()
-            const { data: { user } } = await supabase.auth.getUser()
-
-            if (!user) {
-                router.push('/login')
-                return
-            }
-
-            // Check Permissions
-            const { data: profile } = await supabase
-                .from('profiles')
-                .select('role')
-                .eq('id', user.id)
-                .single()
-
-            if (profile?.role !== 'president') {
-                toast.error("Restricted Access")
-                router.push('/')
-                return
-            }
 
             // Fetch Flagged Posts
             const { data: flagged } = await supabase
@@ -92,6 +89,7 @@ export default function PresidentDashboard() {
                 .from('posts')
                 .select('*, profiles(name,email)')
                 .order('created_at', { ascending: false })
+                // Limit removed or adjusted as needed, but let's keep it consistent
                 .limit(50)
             setAllPosts(recentPosts || [])
 
@@ -99,7 +97,7 @@ export default function PresidentDashboard() {
         }
 
         fetchDashboard()
-    }, [router])
+    }, [router, profile, isProfileLoading])
 
     // --- HANDLERS ---
 
@@ -240,7 +238,7 @@ export default function PresidentDashboard() {
         .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
     const latestEventId = upcomingEvents[0]?.id || null
 
-    if (loading) return <div className="h-screen flex items-center justify-center"><Loader2 className="animate-spin" /></div>
+    if (loading || isProfileLoading) return <DashboardSkeleton />
 
     return (
         <div className="min-h-screen pt-24 pb-20 px-4 max-w-6xl mx-auto">

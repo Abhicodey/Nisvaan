@@ -8,6 +8,8 @@ import { ThemeToggle } from "./ThemeToggle"
 import { createClient } from "@/utils/supabase/client"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
+import { useProfile } from "@/hooks/useProfile"
+import { NavbarSkeleton } from "@/components/ui/skeletons"
 
 const publicLinks = [
   { href: "/", label: "Home" },
@@ -21,81 +23,65 @@ const publicLinks = [
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
-  const [user, setUser] = useState<any>(null)
-  const [profile, setProfile] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
+
+  // Use cached profile
+  const { profile, user, isLoading, signOut } = useProfile()
+
   const [notificationCount, setNotificationCount] = useState(0)
   const [latestEventId, setLatestEventId] = useState<string | null>(null)
   const [isRead, setIsRead] = useState(false)
   const router = useRouter()
-  const supabase = createClient()
+  const supabase = createClient() // Still needed for events/notifications
 
+  // Effect for notifications ONLY (no user fetching)
   useEffect(() => {
-    // Check local storage on mount
     const seenId = localStorage.getItem('nisvaan_seen_event_id')
 
-    async function getUser() {
-      const { data: { user } } = await supabase.auth.getUser()
-      setUser(user)
+    async function fetchNotifications() {
+      if (!user) return
 
-      if (user) {
-        const { data } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', user.id)
-          .single()
-        setProfile(data)
+      // Fetch Notification Count (Upcoming Events)
+      const now = new Date().toISOString()
+      const { data: events, count: eventCount } = await supabase
+        .from('events')
+        .select('id', { count: 'exact' })
+        .gt('date', now)
+        .eq('is_hidden', false)
+        .order('date', { ascending: true })
+        .limit(1)
 
-        // Fetch Notification Count (Upcoming Events)
-        // Fetch Notification Count (Upcoming Events)
-        const now = new Date().toISOString()
-        const { data: events, count: eventCount } = await supabase
-          .from('events')
-          .select('id', { count: 'exact' })
-          .gt('date', now)
-          .eq('is_hidden', false)
-          .order('date', { ascending: true })
-          .limit(1)
+      let flaggedCount = 0
+      // Use profile from hook
+      if (profile?.role === 'president') {
+        const { count: fCount } = await supabase
+          .from('posts')
+          .select('id', { count: 'exact', head: true })
+          .eq('moderation_state', 'under_review')
 
-        let flaggedCount = 0
-        if (data?.role === 'president') {
-          const { count: fCount } = await supabase
-            .from('posts')
-            .select('id', { count: 'exact', head: true })
-            .eq('moderation_state', 'under_review')
-
-          flaggedCount = fCount || 0
-        }
-
-        // Logic:
-        // Events: Show count of all future events, but hide if "latest" is seen.
-        // Flagged: ALWAYS show count if > 0 (Action items).
-
-        const totalEventCount = eventCount || 0
-        let showEventBadge = false
-
-        if (events && events.length > 0) {
-          const nextEventId = events[0].id
-          setLatestEventId(nextEventId)
-
-          // If latest event matches seen ID, user has "read" the notifications (dismissed badge for events)
-          if (seenId !== nextEventId) {
-            showEventBadge = true
-          }
-        }
-
-        // Total Badge = (Actionable Flagged) + (New Events if any)
-        // If events are read, we still show Flagged count.
-        // If events are unread, we show Total.
-
-        const finalCount = flaggedCount + (showEventBadge ? totalEventCount : 0)
-
-        setNotificationCount(finalCount)
-        setIsRead(finalCount === 0) // Hide badge if 0
+        flaggedCount = fCount || 0
       }
-      setLoading(false)
+
+      const totalEventCount = eventCount || 0
+      let showEventBadge = false
+
+      if (events && events.length > 0) {
+        const nextEventId = events[0].id
+        setLatestEventId(nextEventId)
+
+        if (seenId !== nextEventId) {
+          showEventBadge = true
+        }
+      }
+
+      const finalCount = flaggedCount + (showEventBadge ? totalEventCount : 0)
+
+      setNotificationCount(finalCount)
+      setIsRead(finalCount === 0)
     }
-    getUser()
+
+    if (!isLoading && user) {
+      fetchNotifications()
+    }
 
     // Listen for read events
     const handleRead = (e: any) => {
@@ -105,34 +91,13 @@ export function Navbar() {
     }
     window.addEventListener('notificationsRead', handleRead)
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        // ... existing auth logic ...
-        if (session?.user) {
-          setUser(session.user)
-          // Profile fetch...
-          const { data } = await supabase.from('profiles').select('*').eq('id', session.user.id).single()
-          setProfile(data)
-        } else {
-          setUser(null)
-          setProfile(null)
-        }
-        setLoading(false)
-        router.refresh()
-      }
-    )
-
     return () => {
-      subscription.unsubscribe()
       window.removeEventListener('notificationsRead', handleRead)
     }
-  }, [supabase, router, latestEventId]) // Added latestEventId to dependancy might cause loop if not careful. 
-  // Better to move the event listener out or use a ref.
-  // Actually, let's keep it simple.
+  }, [supabase, user, profile, isLoading, latestEventId])
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut()
-    router.push('/login')
+    await signOut()
   }
 
   const getDashboardLink = () => {
@@ -171,8 +136,8 @@ export function Navbar() {
 
             <div className="h-4 w-px bg-border mx-2" />
 
-            {loading ? (
-              <div className="w-9 h-9 rounded-full bg-secondary/50 animate-pulse" />
+            {isLoading ? (
+              <NavbarSkeleton />
             ) : user ? (
               <div className="flex items-center gap-6">
                 <Link

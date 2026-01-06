@@ -1,31 +1,27 @@
-import { createClient } from '@/utils/supabase/server'
-import { redirect } from 'next/navigation'
+'use client'
+
+import { useProfile } from '@/hooks/useProfile'
 import ProfileForm from './ProfileForm'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
+import { ProfileSkeleton } from '@/components/ui/skeletons'
 
-export const dynamic = 'force-dynamic'
+export default function ProfilePage() {
+    const { profile, user, isLoading } = useProfile()
+    const router = useRouter()
 
-export default async function ProfilePage() {
-    const supabase = await createClient()
+    useEffect(() => {
+        if (!isLoading && !user) {
+            router.push('/login')
+        }
+    }, [isLoading, user, router])
 
-    const {
-        data: { user },
-    } = await supabase.auth.getUser()
-
-    if (!user) {
-        return redirect('/login')
+    if (isLoading) {
+        return <ProfileSkeleton />
     }
 
-    // Fetch profile
-    const { data: profile } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single()
+    if (!user) return null // Will redirect via effect
 
-    console.log("SERVER PROFILE FETCH:", profile)
-
-    // Pass user email separately as it's from Auth
-    const userEmail = user.email
-
-    return <ProfileForm profile={profile} userEmail={userEmail} />
+    // Pass profile (even if null/empty row, we pass the user info)
+    return <ProfileForm profile={profile} userEmail={user.email} />
 }
