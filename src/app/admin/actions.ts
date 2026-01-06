@@ -151,7 +151,7 @@ export async function deleteUser(targetUserId: string) {
             .insert({
                 email: targetEmail,
                 reason: 'Permanently Banned by Admin',
-                banned_by: user.id
+                banned_by: user?.id
             })
         if (banError) {
             console.error("Failed to ban email:", banError)
@@ -301,6 +301,19 @@ export async function updateUserRole(targetUserId: string, newRole: 'president' 
     // CRITICAL: Protect the Original President
     if (targetProfile.email === ORIGINAL_PRESIDENT_EMAIL) {
         return { success: false, message: "Action Denied: The Original President cannot be modified." }
+    }
+
+    // 2.1 SUPER ADMIN CHECK (Only Original President can ADD/REMOVE Presidents)
+    // If the requester is NOT the Original President...
+    if (user.email !== ORIGINAL_PRESIDENT_EMAIL) {
+        // ...they cannot promote someone TO President
+        if (newRole === 'president') {
+            return { success: false, message: "Action Denied: Only the Official Nisvaan Account can appoint Presidents." }
+        }
+        // ...they cannot demote an EXISTING President
+        if (targetProfile.role === 'president') {
+            return { success: false, message: "Action Denied: Only the Official Nisvaan Account can remove Presidents." }
+        }
     }
 
     // 3. Update Role
