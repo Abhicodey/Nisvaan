@@ -8,10 +8,12 @@ export function GoogleAuthButton() {
     const supabase = createClient()
 
     const handleLogin = async () => {
+        const redirectTo = `${window.location.origin}/auth/callback`
+        console.log("OAuth Redirect To:", redirectTo)
         await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                redirectTo: `${window.location.origin}/auth/callback`,
+                redirectTo,
             },
         })
     }
