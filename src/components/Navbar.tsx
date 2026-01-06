@@ -147,6 +147,13 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2 group">
+            <Image
+              src="/logo.png"
+              alt="Nisvaan Logo"
+              width={40}
+              height={40}
+              className="w-10 h-10 object-contain rounded-full"
+            />
             <span className="text-2xl font-serif font-semibold text-primary group-hover:text-primary/80 transition-colors">Nisvaan</span>
           </Link>
 
