@@ -75,9 +75,9 @@ export async function submitMembershipApplication(prevState: any, formData: Form
             return { success: false, message: `Failed to send application: ${error.message}` }
         }
 
-        if (!data?.success) {
-            console.error("Function Returned Fail:", data?.error || "Unknown error")
-            return { success: false, message: `Server error: ${data?.error || "Failed to send email"}` }
+        if (!funcData?.success) {
+            console.error("Function Returned Fail:", funcData?.error || "Unknown error")
+            return { success: false, message: `Server error: ${funcData?.error || "Failed to send email"}` }
         }
 
         return { success: true, message: "Application submitted successfully! We will contact you soon." }
