@@ -67,8 +67,11 @@ export async function submitMembershipApplication(prevState: any, formData: Form
         })
 
         if (error) {
-            console.error("Function Invocation Error:", error)
-            return { success: false, message: "Failed to send application. Please try again." }
+            console.error("Function Invocation Error DETAILS:", JSON.stringify(error, null, 2))
+            if (error.status === 404) {
+                return { success: false, message: "Server Error: Email service not found (Did you deploy the function?)" }
+            }
+            return { success: false, message: `Failed to send application: ${error.message}` }
         }
 
         if (!data?.success) {
@@ -106,13 +109,17 @@ export async function submitAnonymousFeedback(prevState: any, formData: FormData
         })
 
         if (error) {
-            console.error("Function Invocation Error:", error)
-            return { success: false, message: "Failed to send feedback." }
+            console.error("Function Invocation Error DETAILS:", JSON.stringify(error, null, 2))
+            // Check for common errors
+            if (error.status === 404) {
+                return { success: false, message: "Server Error: Email service not found (Did you deploy the function?)" }
+            }
+            return { success: false, message: `Failed to send feedback: ${error.message}` }
         }
 
         if (!data?.success) {
             console.error("Function Returned Fail:", data?.error || "Unknown error")
-            return { success: false, message: `Server error: ${data?.error || "Failed to send feedback"}` }
+            return { success: false, message: `Server error: ${data?.error || "Failed to send email"}` }
         }
 
         return { success: true, message: "Thank you for your feedback!" }
