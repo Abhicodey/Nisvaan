@@ -1,5 +1,6 @@
 import Link from "next/link"
-import { Instagram, Mail, MessageCircle, Linkedin, Twitter } from "lucide-react"
+import { Instagram, Mail, MessageCircle, Linkedin } from "lucide-react"
+import { XIcon } from "@/components/icons/XIcon"
 
 export function Footer() {
   return (
@@ -72,9 +73,9 @@ export function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-full bg-secondary hover:bg-primary hover:text-primary-foreground transition-colors duration-200"
-                aria-label="X (Twitter)"
+                aria-label="X"
               >
-                <Twitter className="w-5 h-5 fill-current" />
+                <XIcon className="w-5 h-5 fill-current" />
               </a>
               <a
                 href="mailto:nisvaanthegenderdialogueofbhu@gmail.com"
