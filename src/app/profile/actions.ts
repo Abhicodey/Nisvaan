@@ -58,29 +58,43 @@ export async function updateProfile(prevState: any, formData: FormData) {
     }
 
     let error
+    let updatedProfile
 
     if (profile) {
-        const { error: updateError } = await supabase.from('profiles').update(updateData).eq('id', user.id)
+        // MANDATORY: Use .select().single() to force Supabase to return the updated row
+        const { data, error: updateError } = await supabase
+            .from('profiles')
+            .update(updateData)
+            .eq('id', user.id)
+            .select()
+            .single()
+
         error = updateError
+        updatedProfile = data
     } else {
-        // Fallback: Create profile if missing (Self-healing)
-        // We use createAdminClient to bypass RLS "INSERT" policies which might block regular users
-        // This requires SUPABASE_SERVICE_ROLE_KEY in .env
+        // Fallback: Create profile if missing
         try {
             const adminSupabase = createAdminClient()
-            const { error: insertError } = await adminSupabase.from('profiles').insert({
+            const { data, error: insertError } = await adminSupabase.from('profiles').insert({
                 id: user.id,
                 ...updateData
             })
+                .select()
+                .single()
+
             error = insertError
+            updatedProfile = data
         } catch (e: any) {
-            console.error("Admin client creation failed (missing key?):", e)
-            // Fallback to regular client if admin fails (will likely error with 42501 but worth a try)
-            const { error: retryError } = await supabase.from('profiles').insert({
+            console.error("Admin client creation failed:", e)
+            const { data, error: retryError } = await supabase.from('profiles').insert({
                 id: user.id,
                 ...updateData
             })
+                .select()
+                .single()
+
             error = retryError
+            updatedProfile = data
         }
     }
 
@@ -90,7 +104,7 @@ export async function updateProfile(prevState: any, formData: FormData) {
     }
 
     revalidatePath('/profile')
-    return { success: true, message: "Profile updated successfully!" }
+    return { success: true, message: "Profile updated successfully!", data: updatedProfile }
 }
 
 export async function uploadAvatar(formData: FormData) {

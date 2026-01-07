@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useTransition } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { updateProfile, uploadAvatar } from './actions'
 import { createClient } from '@/utils/supabase/client'
 import Image from 'next/image'
@@ -23,6 +24,7 @@ interface ProfileFormProps {
 
 export default function ProfileForm({ profile, userEmail }: ProfileFormProps) {
     const router = useRouter()
+    const queryClient = useQueryClient()
     const [isPending, startTransition] = useTransition()
     const [uploading, setUploading] = useState(false)
     const fileInputRef = useRef<HTMLInputElement>(null)
@@ -73,6 +75,12 @@ export default function ProfileForm({ profile, userEmail }: ProfileFormProps) {
                 const updateResult = await updateProfile(null, profileData)
                 if (updateResult.success) {
                     toast.success("Profile picture updated")
+                    // Update cache immediately with server response
+                    if (updateResult.data) {
+                        queryClient.setQueryData(['profile'], updateResult.data)
+                    } else {
+                        queryClient.invalidateQueries({ queryKey: ['profile'] })
+                    }
                 } else {
                     toast.error("Failed to save profile picture")
                 }
@@ -104,6 +112,12 @@ export default function ProfileForm({ profile, userEmail }: ProfileFormProps) {
             const result = await updateProfile(null, data)
             if (result.success) {
                 toast.success("Saved")
+                // Update cache immediately with server response
+                if (result.data) {
+                    queryClient.setQueryData(['profile'], result.data)
+                } else {
+                    queryClient.invalidateQueries({ queryKey: ['profile'] })
+                }
             } else {
                 toast.error(result.message || "Failed to save")
             }
