@@ -8,8 +8,10 @@ import { useEffect } from 'react'
 export interface Profile {
     id: string
     name: string | null
-    role: string
+    role: "user" | "media_manager" | "president"
     avatar_url: string | null
+    age: number | null
+    bio: string | null
     moderation_state?: string
     email?: string // joined from auth potentially, or we fetch it
 }
@@ -33,7 +35,7 @@ export function useProfile() {
             // We select specific fields as requested
             const { data: profile, error: profileError } = await supabase
                 .from('profiles')
-                .select('id, name, role, avatar_url, moderation_state, email') // Added email for UI consistency
+                .select('id, name, role, avatar_url, age, bio, moderation_state, email') // Added email for UI consistency
                 .eq('id', session.user.id)
                 .single()
 

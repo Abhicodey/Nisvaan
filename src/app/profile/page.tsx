@@ -23,5 +23,5 @@ export default function ProfilePage() {
     if (!user) return null // Will redirect via effect
 
     // Pass profile (even if null/empty row, we pass the user info)
-    return <ProfileForm profile={profile} userEmail={user.email} />
+    return <ProfileForm profile={profile || null} userEmail={user.email} />
 }
