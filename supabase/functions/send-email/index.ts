@@ -114,7 +114,7 @@ serve(async (req) => {
             JSON.stringify({ success: false, error: error.message }),
             {
                 headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-                status: 500,
+                status: 200, // Return 200 so client sees the error message
             }
         )
     }
