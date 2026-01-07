@@ -29,15 +29,27 @@ const benefits = [
   },
 ]
 
+const INDIAN_STATES = [
+  "Andaman and Nicobar Islands", "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chandigarh",
+  "Chhattisgarh", "Dadra and Nagar Haveli", "Daman and Diu", "Delhi", "Goa", "Gujarat", "Haryana",
+  "Himachal Pradesh", "Jammu and Kashmir", "Jharkhand", "Karnataka", "Kerala", "Ladakh", "Lakshadweep",
+  "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Puducherry",
+  "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal"
+]
+
 export default function JoinPage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
-    course: "",
-    year: "",
-    college: "",
-    location: "",
+    dob: "",
+    education_status: "college", // 'school' | 'college'
+    college: "", // School/College Name based on selection
+    course: "", // Course/Department (Optional for School)
+    year: "", // Only for college
+    state: "",
+    area: "",
+    pincode: "",
     interest: "",
     message: "",
   })
@@ -59,13 +71,14 @@ export default function JoinPage() {
         toast.success(result.message)
         // Reset form
         setFormData({
-          name: "", email: "", phone: "", course: "", year: "",
-          college: "", location: "", interest: "", message: "",
+          name: "", email: "", phone: "", dob: "", education_status: "college",
+          college: "", course: "", year: "", state: "", area: "", pincode: "",
+          interest: "", message: "",
         })
       } else {
         toast.error(result.message)
         if (result.errors) {
-          // simple log for now, could show field errors
+          // Log for debug, but toast shows general failure
           console.error(result.errors)
         }
       }
@@ -224,6 +237,7 @@ export default function JoinPage() {
                   Membership Form
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
+                  {/* Basic Info */}
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">
@@ -252,76 +266,166 @@ export default function JoinPage() {
                       />
                     </div>
                   </div>
+
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">
-                        Phone <span className="text-muted-foreground font-normal">(Optional)</span>
+                        Phone (Numbers only)
                       </label>
                       <input
                         type="tel"
+                        pattern="[0-9]{10}"
                         value={formData.phone}
-                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
+                          setFormData({ ...formData, phone: val })
+                        }}
                         className="w-full px-4 py-3 rounded-xl bg-secondary/50 border border-border focus:border-primary focus:outline-none transition-colors"
-                        placeholder="Your phone number"
+                        placeholder="1234567890"
                       />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">
-                        College/School <span className="text-muted-foreground font-normal">(Optional)</span>
+                        Date of Birth
                       </label>
                       <input
-                        type="text"
-                        value={formData.college}
-                        onChange={(e) => setFormData({ ...formData, college: e.target.value })}
+                        type="date"
+                        required
+                        value={formData.dob}
+                        onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
                         className="w-full px-4 py-3 rounded-xl bg-secondary/50 border border-border focus:border-primary focus:outline-none transition-colors"
-                        placeholder="e.g. Arts Faculty"
                       />
                     </div>
                   </div>
+
+                  <hr className="border-border/50 my-2" />
+
+                  {/* Education */}
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">
+                      I am currently in:
+                    </label>
+                    <div className="flex gap-4">
+                      <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, education_status: 'school' })}
+                        className={`flex-1 py-2 rounded-lg border transition-colors ${formData.education_status === 'school' ? 'bg-primary/20 border-primary text-primary' : 'bg-background border-border hover:bg-secondary/50'}`}
+                      >
+                        School
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, education_status: 'college' })}
+                        className={`flex-1 py-2 rounded-lg border transition-colors ${formData.education_status === 'college' ? 'bg-primary/20 border-primary text-primary' : 'bg-background border-border hover:bg-secondary/50'}`}
+                      >
+                        College / University
+                      </button>
+                    </div>
+                  </div>
+
                   <div className="grid md:grid-cols-2 gap-4">
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-foreground mb-2">
+                        {formData.education_status === 'college' ? 'College / University Name' : 'School Name'}
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.college}
+                        onChange={(e) => setFormData({ ...formData, college: e.target.value })}
+                        className="w-full px-4 py-3 rounded-xl bg-secondary/50 border border-border focus:border-primary focus:outline-none transition-colors"
+                        placeholder={formData.education_status === 'college' ? "e.g. Banaras Hindu University" : "e.g. Central Hindu Boys School"}
+                      />
+                    </div>
+
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">
-                        Course/Department
+                        {formData.education_status === 'college' ? 'Course / Department' : 'Class / Grade'}
                       </label>
                       <input
                         type="text"
                         value={formData.course}
                         onChange={(e) => setFormData({ ...formData, course: e.target.value })}
                         className="w-full px-4 py-3 rounded-xl bg-secondary/50 border border-border focus:border-primary focus:outline-none transition-colors"
-                        placeholder="e.g., B.A. English"
+                        placeholder={formData.education_status === 'college' ? "e.g. B.A. English" : "e.g. Class 12"}
+                      />
+                    </div>
+
+                    {formData.education_status === 'college' && (
+                      <div>
+                        <label className="block text-sm font-medium text-foreground mb-2">
+                          Year of Study
+                        </label>
+                        <select
+                          value={formData.year}
+                          onChange={(e) => setFormData({ ...formData, year: e.target.value })}
+                          className="w-full px-4 py-3 rounded-xl bg-secondary/50 border border-border focus:border-primary focus:outline-none transition-colors"
+                        >
+                          <option value="">Select year</option>
+                          <option value="1">1st Year</option>
+                          <option value="2">2nd Year</option>
+                          <option value="3">3rd Year</option>
+                          <option value="4">4th Year</option>
+                          <option value="pg">Post Graduate</option>
+                          <option value="phd">PhD</option>
+                        </select>
+                      </div>
+                    )}
+                  </div>
+
+                  <hr className="border-border/50 my-2" />
+
+                  {/* Location */}
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">
+                        State
+                      </label>
+                      <select
+                        value={formData.state}
+                        required
+                        onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                        className="w-full px-4 py-3 rounded-xl bg-secondary/50 border border-border focus:border-primary focus:outline-none transition-colors"
+                      >
+                        <option value="">Select State</option>
+                        {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">
+                        Area / City
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.area}
+                        onChange={(e) => setFormData({ ...formData, area: e.target.value })}
+                        className="w-full px-4 py-3 rounded-xl bg-secondary/50 border border-border focus:border-primary focus:outline-none transition-colors"
+                        placeholder="e.g. Hyderabad Gate, Varanasi"
                       />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">
-                        Place you live <span className="text-muted-foreground font-normal">(Optional)</span>
+                        Pincode
                       </label>
                       <input
                         type="text"
-                        value={formData.location}
-                        onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                        required
+                        pattern="[0-9]{6}"
+                        maxLength={6}
+                        value={formData.pincode}
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/[^0-9]/g, '').slice(0, 6);
+                          setFormData({ ...formData, pincode: val })
+                        }}
                         className="w-full px-4 py-3 rounded-xl bg-secondary/50 border border-border focus:border-primary focus:outline-none transition-colors"
-                        placeholder="e.g. Hyderabad Gate"
+                        placeholder="e.g. 221005"
                       />
                     </div>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      Year of Study
-                    </label>
-                    <select
-                      value={formData.year}
-                      onChange={(e) => setFormData({ ...formData, year: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-secondary/50 border border-border focus:border-primary focus:outline-none transition-colors"
-                    >
-                      <option value="">Select year</option>
-                      <option value="1">1st Year</option>
-                      <option value="2">2nd Year</option>
-                      <option value="3">3rd Year</option>
-                      <option value="4">4th Year</option>
-                      <option value="pg">Post Graduate</option>
-                      <option value="phd">PhD</option>
-                    </select>
-                  </div>
+
+                  <hr className="border-border/50 my-2" />
+
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-2">
                       Area of Interest

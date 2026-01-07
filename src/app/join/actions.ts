@@ -7,11 +7,15 @@ import { z } from 'zod'
 const membershipSchema = z.object({
     name: z.string().min(2, "Name is required"),
     email: z.string().email("Invalid email address"),
-    phone: z.string().optional(),
-    college: z.string().optional(),
+    phone: z.string().regex(/^\d{10}$/, "Phone must be exactly 10 digits").optional().or(z.literal("")),
+    dob: z.string().min(1, "Date of birth is required"),
+    education_status: z.enum(["school", "college"]),
+    college: z.string().min(2, "School/College name is required"),
     course: z.string().optional(),
     year: z.string().optional(),
-    location: z.string().optional(),
+    state: z.string().min(2, "State is required"),
+    area: z.string().min(2, "Area/City is required"),
+    pincode: z.string().regex(/^\d{6}$/, "Pincode must be 6 digits"),
     interest: z.string().min(1, "Please select an area of interest"),
     message: z.string().optional()
 })
@@ -26,10 +30,14 @@ export async function submitMembershipApplication(prevState: any, formData: Form
         name: formData.get('name'),
         email: formData.get('email'),
         phone: formData.get('phone'),
+        dob: formData.get('dob'),
+        education_status: formData.get('education_status'),
         college: formData.get('college'),
         course: formData.get('course'),
         year: formData.get('year'),
-        location: formData.get('location'),
+        state: formData.get('state'),
+        area: formData.get('area'),
+        pincode: formData.get('pincode'),
         interest: formData.get('interest'),
         message: formData.get('message'),
     }
@@ -44,25 +52,18 @@ export async function submitMembershipApplication(prevState: any, formData: Form
         }
     }
 
-    const { name, email, phone, college, course, year, location, interest, message } = validatedFields.data
+    const data = validatedFields.data
 
     try {
         const supabase = await createClient()
 
         console.log("Invoking 'send-email' for Membership Application...")
 
-        const { data, error } = await supabase.functions.invoke('send-email', {
+        const { data: funcData, error } = await supabase.functions.invoke('send-email', {
             body: {
                 type: 'join_application',
-                name,
-                email,
-                phone,
-                college,
-                course,
-                year,
-                location,
-                interest,
-                reason: message
+                ...data,
+                reason: data.message // Map message to reason for template compatibility
             }
         })
 

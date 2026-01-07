@@ -11,15 +11,63 @@ interface EmailRequest {
     name?: string
     email?: string
     phone?: string
+    dob?: string
+    education_status?: 'school' | 'college'
     college?: string
     year?: string
     course?: string
-    location?: string
+    state?: string
+    area?: string
+    pincode?: string
     interest?: string
     reason?: string
     message?: string
-    background?: string
 }
+
+// SHARED STYLES
+const EMAIL_STYLES = `
+    body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f4f6f8; margin: 0; padding: 0; }
+    .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .header { background-color: #2c3e50; color: #ffffff; padding: 24px; text-align: center; }
+    .header h1 { margin: 0; font-size: 24px; font-weight: 600; letter-spacing: 0.5px; }
+    .content { padding: 32px; }
+    .field { margin-bottom: 16px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+    .field:last-child { border-bottom: none; }
+    .label { font-size: 12px; text-transform: uppercase; color: #666; font-weight: 700; margin-bottom: 4px; display: block; }
+    .value { font-size: 16px; color: #111; font-weight: 500; }
+    .highlight { background-color: #fbfbfb; padding: 16px; border-left: 4px solid #e67e22; border-radius: 4px; margin-top: 8px; }
+    .footer { background-color: #f8f9fa; padding: 16px; text-align: center; font-size: 12px; color: #999; border-top: 1px solid #eaeaea; }
+`
+
+const renderTemplate = (title: string, contentHtml: string) => `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>${EMAIL_STYLES}</style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>${title}</h1>
+        </div>
+        <div class="content">
+            ${contentHtml}
+        </div>
+        <div class="footer">
+            <p>Sent via Nisvaan Website • ${new Date().toLocaleString()}</p>
+        </div>
+    </div>
+</body>
+</html>
+`
+
+const fieldHtml = (label: string, value: string | undefined) => value ? `
+<div class="field">
+    <span class="label">${label}</span>
+    <div class="value">${value}</div>
+</div>
+` : ''
 
 serve(async (req) => {
     // Handle CORS
@@ -39,8 +87,6 @@ serve(async (req) => {
         const SMTP_PASS = (rawPass || '').trim()
         const TO_EMAIL = (Deno.env.get('TO_EMAIL') || 'nisvaanthegenderdialogueofbhu@gmail.com').trim()
 
-        console.log(`SMTP Debug: Host=${SMTP_HOST} Port=${SMTP_PORT} User=${SMTP_USER.substring(0, 3)}***@${SMTP_USER.split('@')[1] || '?'}`)
-
         if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) {
             throw new Error('SMTP credentials missing (Check SMTP_HOST, SMTP_USER, SMTP_PASS)')
         }
@@ -49,66 +95,71 @@ serve(async (req) => {
         const transporter = nodemailer.createTransport({
             host: SMTP_HOST,
             port: SMTP_PORT,
-            secure: SMTP_PORT === 465, // true for 465, false for other ports
-            auth: {
-                user: SMTP_USER,
-                pass: SMTP_PASS,
-            },
+            secure: SMTP_PORT === 465,
+            auth: { user: SMTP_USER, pass: SMTP_PASS },
         })
 
         let subject = ''
         let html = ''
-        let replyTo = undefined
+        let replyTo = payload.email
 
         if (type === 'join_application') {
-            subject = `New Join Application – Nisvaan`
-            replyTo = payload.email
-            html = `
-        <h1>New Membership Application</h1>
-        <p><strong>Name:</strong> ${payload.name}</p>
-        <p><strong>Email:</strong> ${payload.email}</p>
-        <p><strong>Phone:</strong> ${payload.phone || 'N/A'}</p>
-        <hr />
-        <p><strong>College/School:</strong> ${payload.college || 'N/A'}</p>
-        <p><strong>Course:</strong> ${payload.course || 'N/A'}</p>
-        <p><strong>Year:</strong> ${payload.year || 'N/A'}</p>
-        <p><strong>Location:</strong> ${payload.location || 'N/A'}</p>
-        <hr />
-        <p><strong>Area of Interest:</strong> ${payload.interest || 'N/A'}</p>
-        <p><strong>Reason for Joining:</strong><br/>${payload.reason || 'N/A'}</p>
-      `
+            subject = `New Member Application: ${payload.name}`
+            html = renderTemplate('Membership Application', `
+                ${fieldHtml('Full Name', payload.name)}
+                ${fieldHtml('Email', payload.email)}
+                ${fieldHtml('Phone', payload.phone)}
+                ${fieldHtml('Date of Birth', payload.dob)}
+                
+                <div style="margin: 20px 0; border-top: 2px dashed #eee;"></div>
+                
+                ${fieldHtml('Education Status', payload.education_status === 'college' ? 'University / College' : 'School')}
+                ${fieldHtml('Institution', payload.college)}
+                ${fieldHtml('Course / Grade', payload.course)}
+                ${fieldHtml('Year', payload.year)}
+                
+                <div style="margin: 20px 0; border-top: 2px dashed #eee;"></div>
+
+                ${fieldHtml('State', payload.state)}
+                ${fieldHtml('Area / City', payload.area)}
+                ${fieldHtml('Pincode', payload.pincode)}
+                
+                <div style="margin: 20px 0; border-top: 2px dashed #eee;"></div>
+
+                ${fieldHtml('Fields of Interest', payload.interest)}
+                
+                <div class="field">
+                    <span class="label">Reason for Joining / About</span>
+                    <div class="highlight">${payload.reason || 'No reason provided.'}</div>
+                </div>
+            `)
         } else if (type === 'anonymous_message') {
-            subject = `New Anonymous Message – Nisvaan`
-            html = `
-        <h1>Anonymous Feedback Received</h1>
-        <p><strong>Timestamp:</strong> ${new Date().toISOString()}</p>
-        <p><strong>Message:</strong></p>
-        <blockquote style="background: #f9f9f9; border-left: 10px solid #ccc; margin: 1.5em 10px; padding: 0.5em 10px;">
-          ${(payload.message || '').replace(/\n/g, '<br>')}
-        </blockquote>
-        <p><em>This message was submitted anonymously via the website.</em></p>
-      `
+            subject = `Anonymous Feedback Received`
+            replyTo = undefined // No reply for anonymous
+            html = renderTemplate('Anonymous Feedback', `
+                <div class="highlight" style="font-size: 18px; line-height: 1.6;">
+                    ${(payload.message || '').replace(/\n/g, '<br>')}
+                </div>
+                <p style="margin-top: 20px; color: #666; font-size: 13px;">This message was submitted anonymously via the Nisvaan website. The sender's identity is not recorded.</p>
+            `)
         } else if (type === 'contact_message') {
-            subject = `New Contact Message – Nisvaan`
-            replyTo = payload.email
-            html = `
-        <h1>New Contact Message</h1>
-        <p><strong>Name:</strong> ${payload.name}</p>
-        <p><strong>Email:</strong> ${payload.email}</p>
-        <p><strong>Timestamp:</strong> ${new Date().toISOString()}</p>
-        <hr />
-        <p><strong>Message:</strong></p>
-        <blockquote style="background: #f9f9f9; border-left: 10px solid #ccc; margin: 1.5em 10px; padding: 0.5em 10px;">
-          ${(payload.message || '').replace(/\n/g, '<br>')}
-        </blockquote>
-      `
+            subject = `Contact: ${payload.name}`
+            html = renderTemplate('New Contact Message', `
+                ${fieldHtml('Name', payload.name)}
+                ${fieldHtml('Email', payload.email)}
+                
+                <div class="field">
+                    <span class="label">Message</span>
+                    <div class="highlight">${(payload.message || '').replace(/\n/g, '<br>')}</div>
+                </div>
+            `)
         } else {
             throw new Error('Invalid email type')
         }
 
         // Send Email
         const info = await transporter.sendMail({
-            from: `"Nisvaan Website" <${SMTP_USER}>`,
+            from: `"Nisvaan System" <${SMTP_USER}>`,
             to: TO_EMAIL,
             replyTo: replyTo,
             subject: subject,
@@ -131,7 +182,7 @@ serve(async (req) => {
             JSON.stringify({ success: false, error: error.message }),
             {
                 headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-                status: 200, // Return 200 so client sees the error message
+                status: 200,
             }
         )
     }
