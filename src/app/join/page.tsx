@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react"
 import { motion } from "framer-motion"
-import { Instagram, MessageCircle, Mail, Send, Users, Heart, Sparkles, MessageSquare, Linkedin, Loader2 } from "lucide-react"
+import { Instagram, MessageCircle, Mail, Send, Users, Heart, Sparkles, MessageSquare, Linkedin, Loader2, Twitter } from "lucide-react"
 import { submitMembershipApplication, submitAnonymousFeedback } from "./actions"
 import { toast } from "sonner"
 
@@ -208,6 +208,21 @@ export default function JoinPage() {
                   <div>
                     <h3 className="font-semibold text-foreground">LinkedIn</h3>
                     <p className="text-sm text-muted-foreground">Connect with us on LinkedIn</p>
+                  </div>
+                </a>
+
+                <a
+                  href="https://x.com/Nisvaan_BHU"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 p-6 rounded-2xl bg-card border border-border hover:border-black/30 hover:shadow-lg transition-all duration-300 group"
+                >
+                  <div className="w-14 h-14 rounded-full bg-black/10 flex items-center justify-center group-hover:bg-black/20 transition-colors">
+                    <Twitter className="w-7 h-7 text-black fill-current" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground">X (Twitter)</h3>
+                    <p className="text-sm text-muted-foreground">@Nisvaan_BHU - Follow us</p>
                   </div>
                 </a>
 

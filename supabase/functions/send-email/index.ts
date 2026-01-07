@@ -26,17 +26,17 @@ interface EmailRequest {
 
 // SHARED STYLES
 const EMAIL_STYLES = `
-    body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f4f6f8; margin: 0; padding: 0; }
+    body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.6; color: #1A1A1A; background-color: #F4EFEA; margin: 0; padding: 0; }
     .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-    .header { background-color: #2c3e50; color: #ffffff; padding: 24px; text-align: center; }
-    .header h1 { margin: 0; font-size: 24px; font-weight: 600; letter-spacing: 0.5px; }
+    .header { background-color: #C97A7A; color: #ffffff; padding: 24px; text-align: center; }
+    .header h1 { margin: 0; font-size: 24px; font-weight: 600; letter-spacing: 0.5px; font-family: serif; }
     .content { padding: 32px; }
-    .field { margin-bottom: 16px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+    .field { margin-bottom: 16px; border-bottom: 1px solid #F0E6DD; padding-bottom: 8px; }
     .field:last-child { border-bottom: none; }
-    .label { font-size: 12px; text-transform: uppercase; color: #666; font-weight: 700; margin-bottom: 4px; display: block; }
-    .value { font-size: 16px; color: #111; font-weight: 500; }
-    .highlight { background-color: #fbfbfb; padding: 16px; border-left: 4px solid #e67e22; border-radius: 4px; margin-top: 8px; }
-    .footer { background-color: #f8f9fa; padding: 16px; text-align: center; font-size: 12px; color: #999; border-top: 1px solid #eaeaea; }
+    .label { font-size: 12px; text-transform: uppercase; color: #807570; font-weight: 700; margin-bottom: 4px; display: block; }
+    .value { font-size: 16px; color: #1A1A1A; font-weight: 500; }
+    .highlight { background-color: #F8F9FA; padding: 16px; border-left: 4px solid #D2A679; border-radius: 4px; margin-top: 8px; }
+    .footer { background-color: #F0E6DD; padding: 16px; text-align: center; font-size: 12px; color: #807570; border-top: 1px solid #DBCDBB; }
 `
 
 const renderTemplate = (title: string, contentHtml: string) => `
