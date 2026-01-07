@@ -16,14 +16,14 @@ const teamMembers = [
     name: "Rohit Kumar",
     role: "Vice President",
     bio: "Believes in the power of education and dialogue to transform perspectives.",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80",
+    image: "/images/team/vp.png",
     social: { instagram: "#", linkedin: "#" },
   },
   {
     name: "Priya Sharma",
     role: "Secretary",
     bio: "Dedicated to organizing events that spark conversations and build community.",
-    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80",
+    image: "/images/team/secretary.png",
     social: { instagram: "#", linkedin: "#" },
   },
   {
