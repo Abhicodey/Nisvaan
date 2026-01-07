@@ -1,15 +1,7 @@
 'use server'
 
-import { Resend } from 'resend'
+import { createClient } from '@/utils/supabase/server'
 import { z } from 'zod'
-
-const resend = new Resend(process.env.RESEND_API_KEY)
-const OFFICIAL_EMAIL = 'nisvaanthegenderdialogueofbhu@gmail.com'
-
-console.log("Resend Config:", {
-    hasKey: !!process.env.RESEND_API_KEY,
-    keyPrefix: process.env.RESEND_API_KEY?.substring(0, 3) + "..."
-})
 
 // Schema for Membership Application
 const membershipSchema = z.object({
@@ -55,37 +47,40 @@ export async function submitMembershipApplication(prevState: any, formData: Form
     const { name, email, phone, college, course, year, location, interest, message } = validatedFields.data
 
     try {
-        const { error } = await resend.emails.send({
-            from: 'Nisvaan Website <onboarding@resend.dev>', // Use verified domain or default testing domain
-            to: OFFICIAL_EMAIL,
-            replyTo: email,
-            subject: `New Membership Application: ${name}`,
-            html: `
-                <h1>New Membership Application</h1>
-                <p><strong>Name:</strong> ${name}</p>
-                <p><strong>Email:</strong> ${email}</p>
-                <p><strong>Phone:</strong> ${phone || 'N/A'}</p>
-                <hr />
-                <p><strong>College/School:</strong> ${college || 'N/A'}</p>
-                <p><strong>Course:</strong> ${course || 'N/A'}</p>
-                <p><strong>Year:</strong> ${year || 'N/A'}</p>
-                <p><strong>Location:</strong> ${location || 'N/A'}</p>
-                <hr />
-                <p><strong>Area of Interest:</strong> ${interest}</p>
-                <p><strong>Why join:</strong><br/>${message || 'N/A'}</p>
-            `
+        const supabase = await createClient()
+
+        console.log("Invoking 'send-email' for Membership Application...")
+
+        const { data, error } = await supabase.functions.invoke('send-email', {
+            body: {
+                type: 'join_application',
+                name,
+                email,
+                phone,
+                college,
+                course,
+                year,
+                location,
+                interest,
+                reason: message
+            }
         })
 
         if (error) {
-            console.error("Resend Membership Error DETAILS:", JSON.stringify(error, null, 2))
-            return { success: false, message: `Failed to send: ${error.message || "Unknown error"}` }
+            console.error("Function Invocation Error:", error)
+            return { success: false, message: "Failed to send application. Please try again." }
+        }
+
+        if (!data?.success) {
+            console.error("Function Returned Fail:", data?.error || "Unknown error")
+            return { success: false, message: `Server error: ${data?.error || "Failed to send email"}` }
         }
 
         return { success: true, message: "Application submitted successfully! We will contact you soon." }
 
     } catch (e: any) {
-        console.error("Email send failed:", e)
-        return { success: false, message: "An error occurred. Please try again later." }
+        console.error("Action error:", e)
+        return { success: false, message: "An unexpected error occurred." }
     }
 }
 
@@ -99,29 +94,31 @@ export async function submitAnonymousFeedback(prevState: any, formData: FormData
     }
 
     try {
-        const { error } = await resend.emails.send({
-            from: 'Nisvaan Feedback <onboarding@resend.dev>',
-            to: OFFICIAL_EMAIL,
-            subject: `New Anonymous Feedback`,
-            html: `
-                <h1>Anonymous Feedback Received</h1>
-                <p><strong>Message:</strong></p>
-                <blockquote style="background: #f9f9f9; border-left: 10px solid #ccc; margin: 1.5em 10px; padding: 0.5em 10px;">
-                    ${validated.data.message.replace(/\n/g, '<br>')}
-                </blockquote>
-                <p><em>This message was submitted anonymously via the website.</em></p>
-            `
+        const supabase = await createClient()
+
+        console.log("Invoking 'send-email' for Anonymous Feedback...")
+
+        const { data, error } = await supabase.functions.invoke('send-email', {
+            body: {
+                type: 'anonymous_message',
+                message: validated.data.message
+            }
         })
 
         if (error) {
-            console.error("Resend Feedback Error DETAILS:", JSON.stringify(error, null, 2))
-            return { success: false, message: `Failed to send: ${error.message || "Unknown error"}` }
+            console.error("Function Invocation Error:", error)
+            return { success: false, message: "Failed to send feedback." }
+        }
+
+        if (!data?.success) {
+            console.error("Function Returned Fail:", data?.error || "Unknown error")
+            return { success: false, message: `Server error: ${data?.error || "Failed to send feedback"}` }
         }
 
         return { success: true, message: "Thank you for your feedback!" }
 
     } catch (e: any) {
-        console.error("Feedback send failed:", e)
+        console.error("Action error:", e)
         return { success: false, message: "An error occurred." }
     }
 }
