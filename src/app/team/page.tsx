@@ -9,7 +9,7 @@ const teamMembers = [
     name: "Ananya Mishra",
     role: "President",
     bio: "Passionate about creating inclusive spaces for meaningful dialogue on gender equality.",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80",
+    image: "/images/team/president.png",
     social: { instagram: "#", linkedin: "#" },
   },
   {
