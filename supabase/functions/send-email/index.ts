@@ -35,7 +35,7 @@ serve(async (req) => {
         const SMTP_HOST = Deno.env.get('SMTP_HOST')
         const SMTP_PORT = parseInt(Deno.env.get('SMTP_PORT') || '587')
         const SMTP_USER = Deno.env.get('SMTP_USER')
-        const SMTP_PASS = Deno.env.get('SMTP_PASS')
+        const SMTP_PASS = Deno.env.get('SMTP_PASS') || Deno.env.get('SMTP_PASSWORD')
         const TO_EMAIL = Deno.env.get('TO_EMAIL') || 'nisvaanthegenderdialogueofbhu@gmail.com'
 
         if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) {
