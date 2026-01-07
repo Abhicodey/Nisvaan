@@ -44,63 +44,78 @@ export async function updateProfile(prevState: any, formData: FormData) {
         return { success: false, message: "User not authenticated" }
     }
 
-    // Check if profile exists
-    const { data: profile } = await supabase.from('profiles').select('id').eq('id', user.id).single()
-
-    const updateData: any = {
+    // Prepare data payload
+    const profileData: any = {
         name: fullName,
         age: age,
         bio: bio,
     }
 
     if (avatarUrl) {
-        updateData.avatar_url = avatarUrl
+        profileData.avatar_url = avatarUrl
     }
 
     let error
     let updatedProfile
 
-    if (profile) {
-        // MANDATORY: Use .select().single() to force Supabase to return the updated row
-        const { data, error: updateError } = await supabase
-            .from('profiles')
-            .update(updateData)
-            .eq('id', user.id)
-            .select()
-            .single()
+    // STRATEGY: Try UPDATE first. If it fails due to missing row, then INSERT.
+    // This avoids race conditions and RLS issues with "Select then Update".
 
-        error = updateError
-        updatedProfile = data
+    const { data: updateResult, error: updateError } = await supabase
+        .from('profiles')
+        .update(profileData)
+        .eq('id', user.id)
+        .select()
+        .single()
+
+    if (!updateError) {
+        updatedProfile = updateResult
     } else {
-        // Fallback: Create profile if missing
-        try {
-            const adminSupabase = createAdminClient()
-            const { data, error: insertError } = await adminSupabase.from('profiles').insert({
-                id: user.id,
-                ...updateData
-            })
-                .select()
-                .single()
+        // Check if error is "No rows found" (PGRST116)
+        if (updateError.code === 'PGRST116') {
+            console.log("Profile not found locally, attempting to create new profile...")
 
-            error = insertError
-            updatedProfile = data
-        } catch (e: any) {
-            console.error("Admin client creation failed:", e)
-            const { data, error: retryError } = await supabase.from('profiles').insert({
-                id: user.id,
-                ...updateData
-            })
-                .select()
-                .single()
+            // Fallback: Create profile
+            try {
+                // Try Admin Client first (bypasses RLS)
+                const adminSupabase = createAdminClient()
+                const { data: insertResult, error: insertError } = await adminSupabase
+                    .from('profiles')
+                    .insert({ id: user.id, ...profileData })
+                    .select()
+                    .single()
 
-            error = retryError
-            updatedProfile = data
+                if (insertError) throw insertError
+                updatedProfile = insertResult
+
+            } catch (e: any) {
+                console.error("Admin insert failed, falling back to standard client:", e)
+
+                // Fallback to Standard Client
+                const { data: retryResult, error: retryError } = await supabase
+                    .from('profiles')
+                    .insert({ id: user.id, ...profileData })
+                    .select()
+                    .single()
+
+                if (retryError) {
+                    error = retryError
+                } else {
+                    updatedProfile = retryResult
+                }
+            }
+        } else {
+            // Genuine Update Error
+            error = updateError
         }
     }
 
     if (error) {
-        console.error("Profile update error:", error)
-        return { success: false, message: "Failed to update profile. Please try again." }
+        console.error("Profile update FAILED. Details:", JSON.stringify(error, null, 2))
+        return {
+            success: false,
+            message: `Update failed: ${error.message || error.code || "Unknown error"}`
+        }
     }
 
     revalidatePath('/profile')
