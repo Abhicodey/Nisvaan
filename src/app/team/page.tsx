@@ -6,46 +6,68 @@ import { Mail, Instagram, Linkedin, Send } from "lucide-react"
 
 const teamMembers = [
   {
-    name: "Ananya Mishra",
+    name: "Jyotsna",
     role: "President",
     bio: "Passionate about creating inclusive spaces for meaningful dialogue on gender equality.",
-    image: "/images/team/president.png",
-    social: { instagram: "#", linkedin: "#" },
+    image: "/images/team/president.jpg",
+    social: {
+      instagram: "https://www.instagram.com/iwritesmtms?igsh=MWJkNWs5czc0ZzF4cg==",
+      linkedin: "https://www.linkedin.com/in/jyotsna-singh-b81a31269/"
+    },
+    objectPosition: "center 20%",
   },
   {
-    name: "Rohit Kumar",
+    name: "Tanishq",
     role: "Vice President",
     bio: "Believes in the power of education and dialogue to transform perspectives.",
-    image: "/images/team/vp.png",
-    social: { instagram: "#", linkedin: "#" },
+    image: "/images/team/vp.jpg",
+    social: {
+      instagram: "https://www.instagram.com/_tanishq_2026?igsh=cHc3eGcwNDh5bTgx",
+      linkedin: ""
+    },
+    objectPosition: "center 20%",
+    scale: 1.5,
   },
   {
-    name: "Priya Sharma",
+    name: "Shivangi",
     role: "Secretary",
     bio: "Dedicated to organizing events that spark conversations and build community.",
-    image: "/images/team/secretary.png",
-    social: { instagram: "#", linkedin: "#" },
+    image: "/images/team/secretary.jpg",
+    social: { instagram: "", linkedin: "" },
+    objectPosition: "65% 20%",
   },
   {
-    name: "Arjun Verma",
-    role: "Treasurer",
-    bio: "Committed to ensuring resources are used effectively to further our mission.",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80",
-    social: { instagram: "#", linkedin: "#" },
+    name: "Anshika",
+    role: "Operations Head",
+    bio: "Ensuring smooth execution of all our initiatives to further our mission.",
+    image: "/images/team/operations_head.jpg",
+    social: {
+      instagram: "https://www.instagram.com/anshika0_0g?igsh=bzB1dXA4eG50MmUz",
+      linkedin: ""
+    },
+    objectPosition: "center 10%",
   },
   {
-    name: "Kavya Singh",
-    role: "Content Lead",
-    bio: "Creative storyteller focused on amplifying diverse voices through our platform.",
-    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80",
-    social: { instagram: "#", linkedin: "#" },
+    name: "Anshkriti",
+    role: "Digital Media Head",
+    bio: "Passionate about crafting designs that reflect the society’s vision and values",
+    image: "/images/team/digital_head.jpg",
+    social: {
+      instagram: "https://www.instagram.com/a_sensiferous_girl?igsh=MXZqaWQ1bTAyeTRldA==",
+      linkedin: ""
+    },
+    objectPosition: "center 20%",
   },
   {
-    name: "Vikram Patel",
-    role: "Events Coordinator",
-    bio: "Expert at bringing people together for impactful workshops and seminars.",
-    image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&q=80",
-    social: { instagram: "#", linkedin: "#" },
+    name: "Nancy",
+    role: "Logistics Head",
+    bio: "Ensuring seamless coordination and execution of all our on-ground activities.",
+    image: "/images/team/logistics_head.jpg",
+    social: {
+      instagram: "https://www.instagram.com/nancy_choudharyyyyy?igsh=OGJjZXVwNzlqOGkw",
+      linkedin: ""
+    },
+    objectPosition: "center 20%",
   },
 ]
 
@@ -96,12 +118,16 @@ export default function TeamPage() {
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 className="group text-center"
               >
-                <div className="relative mb-6 mx-auto w-48 h-48">
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/30 to-lavender/30 group-hover:scale-105 transition-transform duration-300" />
+                <div className="relative mb-6 mx-auto w-48 h-48 overflow-hidden rounded-full border-4 border-card">
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-lavender/30 group-hover:scale-105 transition-transform duration-300" />
                   <img
                     src={member.image}
                     alt={member.name}
-                    className="relative w-full h-full rounded-full object-cover border-4 border-card"
+                    className="relative w-full h-full object-cover"
+                    style={{
+                      objectPosition: member.objectPosition || 'center',
+                      transform: member.scale ? `scale(${member.scale})` : 'none'
+                    }}
                   />
                 </div>
                 <h3 className="text-xl font-serif font-semibold text-foreground mb-1">
@@ -112,26 +138,34 @@ export default function TeamPage() {
                   {member.bio}
                 </p>
                 <div className="flex justify-center gap-3">
-                  <a
-                    href={member.social.instagram}
-                    className="p-2 rounded-full bg-secondary hover:bg-primary hover:text-primary-foreground transition-colors duration-200"
-                    aria-label={`${member.name}'s Instagram`}
-                  >
-                    <Instagram className="w-4 h-4" />
-                  </a>
-                  <a
-                    href={member.social.linkedin}
-                    className="p-2 rounded-full bg-secondary hover:bg-primary hover:text-primary-foreground transition-colors duration-200"
-                    aria-label={`${member.name}'s LinkedIn`}
-                  >
-                    <Linkedin className="w-4 h-4" />
-                  </a>
+                  {member.social.instagram && (
+                    <a
+                      href={member.social.instagram}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 rounded-full bg-secondary hover:bg-primary hover:text-primary-foreground transition-colors duration-200"
+                      aria-label={`${member.name}'s Instagram`}
+                    >
+                      <Instagram className="w-4 h-4" />
+                    </a>
+                  )}
+                  {member.social.linkedin && (
+                    <a
+                      href={member.social.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 rounded-full bg-secondary hover:bg-primary hover:text-primary-foreground transition-colors duration-200"
+                      aria-label={`${member.name}'s LinkedIn`}
+                    >
+                      <Linkedin className="w-4 h-4" />
+                    </a>
+                  )}
                 </div>
               </motion.div>
             ))}
           </div>
         </div>
-      </section>
+      </section >
 
       <section className="py-16 md:py-24 bg-secondary/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -262,6 +296,6 @@ export default function TeamPage() {
           </motion.div>
         </div>
       </section>
-    </div>
+    </div >
   )
 }
