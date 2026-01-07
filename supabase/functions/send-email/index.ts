@@ -32,14 +32,17 @@ serve(async (req) => {
         const { type } = payload
 
         // Validate Secrets
-        const SMTP_HOST = Deno.env.get('SMTP_HOST')
-        const SMTP_PORT = parseInt(Deno.env.get('SMTP_PORT') || '587')
-        const SMTP_USER = Deno.env.get('SMTP_USER')
-        const SMTP_PASS = Deno.env.get('SMTP_PASS') || Deno.env.get('SMTP_PASSWORD')
-        const TO_EMAIL = Deno.env.get('TO_EMAIL') || 'nisvaanthegenderdialogueofbhu@gmail.com'
+        const SMTP_HOST = (Deno.env.get('SMTP_HOST') || '').trim()
+        const SMTP_PORT = parseInt((Deno.env.get('SMTP_PORT') || '587').trim())
+        const SMTP_USER = (Deno.env.get('SMTP_USER') || '').trim()
+        const rawPass = Deno.env.get('SMTP_PASS') || Deno.env.get('SMTP_PASSWORD')
+        const SMTP_PASS = (rawPass || '').trim()
+        const TO_EMAIL = (Deno.env.get('TO_EMAIL') || 'nisvaanthegenderdialogueofbhu@gmail.com').trim()
+
+        console.log(`SMTP Debug: Host=${SMTP_HOST} Port=${SMTP_PORT} User=${SMTP_USER.substring(0, 3)}***@${SMTP_USER.split('@')[1] || '?'}`)
 
         if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) {
-            throw new Error('Missing SMTP configuration')
+            throw new Error('SMTP credentials missing (Check SMTP_HOST, SMTP_USER, SMTP_PASS)')
         }
 
         // Create Transporter
