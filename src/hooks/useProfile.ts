@@ -41,16 +41,26 @@ export function useProfile() {
 
             if (profileError) {
                 console.error('Profile fetch error:', profileError)
-                // If profile is missing but user exists, we might return a partial user object
-                // or null. For this app, let's treat missing profile as "not fully logged in"
-                // or just return the user id.
-                // However, standard flow implies profile exists.
                 return null
+            }
+
+            // TRIGGER AUTO-HEAL (Fire and Forget)
+            // We dynamically import the server action to avoid bundling issues if possible, 
+            // or just call it if allowed in client components. 
+            // Since it's a server action, it's fine.
+            const user = session.user
+            if (!profile.email || !profile.name || !profile.avatar_url) {
+                import('@/app/profile/actions').then(({ healProfile }) => {
+                    healProfile(user.id, user.user_metadata, user.email || '')
+                }).catch(err => console.error("Auto-heal trigger failed:", err))
             }
 
             return {
                 ...profile,
-                email: session.user.email // Ensure email is from session if not in profile
+                // Optimistically apply auth data for UI if profile is missing it
+                email: profile.email || session.user.email,
+                name: profile.name || session.user.user_metadata?.name || session.user.user_metadata?.full_name,
+                avatar_url: profile.avatar_url || session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture
             } as Profile
         },
         staleTime: 5 * 60 * 1000, // 5 minutes

@@ -167,3 +167,46 @@ export async function uploadAvatar(formData: FormData) {
         return { success: false, message: e.message }
     }
 }
+
+export async function healProfile(userId: string, metadata: any, email: string) {
+    const supabase = await createClient()
+    const { data: profile } = await supabase.from('profiles').select('*').eq('id', userId).single()
+
+    if (!profile) return
+
+    const updates: any = {}
+    let needsUpdate = false
+
+    if (!profile.email && email) {
+        updates.email = email
+        needsUpdate = true
+    }
+
+    if (!profile.name && (metadata?.name || metadata?.full_name)) {
+        updates.name = metadata.name || metadata.full_name
+        needsUpdate = true
+    }
+
+    if (!profile.avatar_url && (metadata?.avatar_url || metadata?.picture)) {
+        updates.avatar_url = metadata.avatar_url || metadata.picture
+        needsUpdate = true
+    }
+
+    // Attempt to extract age if present (rare)
+    if (!profile.age && metadata?.age) {
+        updates.age = metadata.age
+        needsUpdate = true
+    }
+
+    if (needsUpdate) {
+        console.log("Healing profile for user:", userId, updates)
+        // Try normal update
+        const { error } = await supabase.from('profiles').update(updates).eq('id', userId)
+
+        if (error) {
+            console.error("Heal failed with standard client, trying admin:", error)
+            const admin = createAdminClient()
+            await admin.from('profiles').update(updates).eq('id', userId)
+        }
+    }
+}
