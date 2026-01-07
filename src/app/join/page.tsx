@@ -1,8 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useTransition } from "react"
 import { motion } from "framer-motion"
-import { Instagram, MessageCircle, Mail, Send, Users, Heart, Sparkles, MessageSquare, Linkedin } from "lucide-react"
+import { Instagram, MessageCircle, Mail, Send, Users, Heart, Sparkles, MessageSquare, Linkedin, Loader2 } from "lucide-react"
+import { submitMembershipApplication, submitAnonymousFeedback } from "./actions"
+import { toast } from "sonner"
 
 const benefits = [
   {
@@ -40,30 +42,34 @@ export default function JoinPage() {
     message: "",
   })
 
+  const [isPending, startTransition] = useTransition()
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Construct email body
-    const body = `
-New Membership Application
+    startTransition(async () => {
+      const formDataObj = new FormData()
+      Object.entries(formData).forEach(([key, value]) => {
+        formDataObj.append(key, value)
+      })
 
-Name: ${formData.name}
-Email: ${formData.email}
-Phone: ${formData.phone || "Not provided"}
+      const result = await submitMembershipApplication(null, formDataObj)
 
-College/School: ${formData.college || "Not provided"}
-Course/Department: ${formData.course || "Not provided"}
-Year of Study: ${formData.year || "Not provided"}
-Location: ${formData.location || "Not provided"}
-
-Area of Interest: ${formData.interest}
-
-Why do you want to join?
-${formData.message || "No specific reason provided."}
-    `.trim()
-
-    // Open mail client
-    window.location.href = `mailto:nisvaanthegenderdialogueofbhu@gmail.com?subject=Membership Application: ${formData.name}&body=${encodeURIComponent(body)}`
+      if (result.success) {
+        toast.success(result.message)
+        // Reset form
+        setFormData({
+          name: "", email: "", phone: "", course: "", year: "",
+          college: "", location: "", interest: "", message: "",
+        })
+      } else {
+        toast.error(result.message)
+        if (result.errors) {
+          // simple log for now, could show field errors
+          console.error(result.errors)
+        }
+      }
+    })
   }
 
   return (
@@ -347,10 +353,11 @@ ${formData.message || "No specific reason provided."}
                   </div>
                   <button
                     type="submit"
-                    className="w-full px-6 py-3 rounded-full bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-all duration-300 flex items-center justify-center gap-2"
+                    disabled={isPending}
+                    className="w-full px-6 py-3 rounded-full bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <Send className="w-4 h-4" />
-                    Submit Application
+                    {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                    {isPending ? "Sending..." : "Submit Application"}
                   </button>
                 </form>
               </div>
@@ -375,22 +382,52 @@ ${formData.message || "No specific reason provided."}
             <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
               Have suggestions, thoughts, or feedback you&apos;d like to share anonymously? We value every perspective.
             </p>
-            <form className="max-w-md mx-auto">
-              <textarea
-                rows={4}
-                placeholder="Share your thoughts anonymously..."
-                className="w-full px-4 py-3 rounded-xl bg-card border border-border focus:border-primary focus:outline-none transition-colors resize-none mb-4"
-              />
-              <button
-                type="submit"
-                className="px-8 py-3 rounded-full bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-all duration-300"
-              >
-                Submit Anonymously
-              </button>
-            </form>
+            <FeedbackForm />
           </motion.div>
         </div>
       </section>
     </div>
+  )
+}
+
+function FeedbackForm() {
+  const [isPending, startTransition] = useTransition()
+  const [message, setMessage] = useState("")
+
+  const handleFeedbackSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    startTransition(async () => {
+      const formData = new FormData()
+      formData.append('message', message)
+
+      const result = await submitAnonymousFeedback(null, formData)
+
+      if (result.success) {
+        toast.success(result.message)
+        setMessage("")
+      } else {
+        toast.error(result.message)
+      }
+    })
+  }
+
+  return (
+    <form onSubmit={handleFeedbackSubmit} className="max-w-md mx-auto">
+      <textarea
+        rows={4}
+        required
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        placeholder="Share your thoughts anonymously..."
+        className="w-full px-4 py-3 rounded-xl bg-card border border-border focus:border-primary focus:outline-none transition-colors resize-none mb-4"
+      />
+      <button
+        type="submit"
+        disabled={isPending}
+        className="px-8 py-3 rounded-full bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-all duration-300 disabled:opacity-50"
+      >
+        {isPending ? "Sending..." : "Submit Anonymously"}
+      </button>
+    </form>
   )
 }
