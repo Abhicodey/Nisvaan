@@ -6,6 +6,11 @@ import { z } from 'zod'
 const resend = new Resend(process.env.RESEND_API_KEY)
 const OFFICIAL_EMAIL = 'nisvaanthegenderdialogueofbhu@gmail.com'
 
+console.log("Resend Config:", {
+    hasKey: !!process.env.RESEND_API_KEY,
+    keyPrefix: process.env.RESEND_API_KEY?.substring(0, 3) + "..."
+})
+
 // Schema for Membership Application
 const membershipSchema = z.object({
     name: z.string().min(2, "Name is required"),
