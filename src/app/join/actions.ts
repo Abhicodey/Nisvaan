@@ -77,8 +77,8 @@ export async function submitMembershipApplication(prevState: any, formData: Form
         })
 
         if (error) {
-            console.error("Resend Error:", error)
-            return { success: false, message: "Failed to send application. Please try again." }
+            console.error("Resend Membership Error DETAILS:", JSON.stringify(error, null, 2))
+            return { success: false, message: `Failed to send: ${error.message || "Unknown error"}` }
         }
 
         return { success: true, message: "Application submitted successfully! We will contact you soon." }
@@ -114,8 +114,8 @@ export async function submitAnonymousFeedback(prevState: any, formData: FormData
         })
 
         if (error) {
-            console.error("Resend Feedback Error:", error)
-            return { success: false, message: "Failed to send feedback." }
+            console.error("Resend Feedback Error DETAILS:", JSON.stringify(error, null, 2))
+            return { success: false, message: `Failed to send: ${error.message || "Unknown error"}` }
         }
 
         return { success: true, message: "Thank you for your feedback!" }
