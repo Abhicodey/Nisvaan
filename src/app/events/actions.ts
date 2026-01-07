@@ -93,7 +93,12 @@ export async function createEvent(prevState: any, formData: FormData) {
 
             if (emailRes.ok) {
                 // Mark notification as sent
-                await supabase.from('events').update({ notification_sent: true }).eq('id', eventData.id)
+                await supabase
+                    .from('events')
+                    .update({ notification_sent: true })
+                    .eq('id', eventData.id)
+                    .select()
+                    .single() // Confirm update
             } else {
                 console.error("Email function failed", await emailRes.text())
             }

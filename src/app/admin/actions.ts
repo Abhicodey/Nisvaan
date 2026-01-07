@@ -31,12 +31,17 @@ export async function suspendUser(userId: string) {
         return { success: false, message: "Action Denied: The Original President cannot be modified." }
     }
 
-    const { error } = await supabase
+    const { data: suspendedUser, error } = await supabase
         .from('profiles')
         .update({ account_status: 'suspended', timeout_until: null })
         .eq('id', userId)
+        .select()
+        .single()
 
-    if (error) return { success: false, message: error.message }
+    if (error) {
+        console.error("Suspend user failed:", error)
+        return { success: false, message: error.message }
+    }
 
     revalidatePath('/dashboard/president')
     return { success: true, message: "User suspended." }
@@ -63,12 +68,17 @@ export async function timeoutUser(userId: string, minutes: number) {
 
     const timeoutDate = new Date(Date.now() + minutes * 60000).toISOString()
 
-    const { error } = await supabase
+    const { data: maskedUser, error } = await supabase
         .from('profiles')
         .update({ timeout_until: timeoutDate, account_status: 'suspended' })
         .eq('id', userId)
+        .select()
+        .single()
 
-    if (error) return { success: false, message: error.message }
+    if (error) {
+        console.error("Timeout user failed:", error)
+        return { success: false, message: error.message }
+    }
 
     revalidatePath('/dashboard/president')
     return { success: true, message: `User masked for ${minutes} minutes.` }
@@ -99,12 +109,17 @@ export async function restoreUser(userId: string) {
         return { success: false, message: "Action Denied: The Original President cannot be modified." }
     }
 
-    const { error } = await supabase
+    const { data: restoredUser, error } = await supabase
         .from('profiles')
         .update({ account_status: 'normal', timeout_until: null })
         .eq('id', userId)
+        .select()
+        .single()
 
-    if (error) return { success: false, message: error.message }
+    if (error) {
+        console.error("Restore user failed:", error)
+        return { success: false, message: error.message }
+    }
 
     revalidatePath('/dashboard/president')
     return { success: true, message: "User account restored." }
@@ -187,12 +202,17 @@ export async function toggleEventVisibility(eventId: string, isHidden: boolean) 
         return { success: false, message: "Unauthorized." }
     }
 
-    const { error } = await supabase
+    const { data: updatedEvent, error } = await supabase
         .from('events')
         .update({ is_hidden: isHidden })
         .eq('id', eventId)
+        .select()
+        .single()
 
-    if (error) return { success: false, message: "Failed to update visibility." }
+    if (error) {
+        console.error("Event visibility update failed:", error)
+        return { success: false, message: "Failed to update visibility." }
+    }
 
     revalidatePath('/events')
     revalidatePath('/dashboard/president')
@@ -213,12 +233,17 @@ export async function toggleVoiceVisibility(postId: string, isHidden: boolean) {
         return { success: false, message: "Unauthorized." }
     }
 
-    const { error } = await supabase
+    const { data: updatedVoice, error } = await supabase
         .from('posts')
         .update({ is_hidden: isHidden })
         .eq('id', postId)
+        .select()
+        .single()
 
-    if (error) return { success: false, message: "Failed to update visibility: " + error.message }
+    if (error) {
+        console.error("Voice visibility update failed:", error)
+        return { success: false, message: "Failed to update visibility: " + error.message }
+    }
 
     revalidatePath('/voices')
     revalidatePath('/dashboard/president')
@@ -317,12 +342,17 @@ export async function updateUserRole(targetUserId: string, newRole: 'president' 
     }
 
     // 3. Update Role
-    const { error } = await supabase
+    const { data: updatedProfile, error } = await supabase
         .from('profiles')
         .update({ role: newRole })
         .eq('id', targetUserId)
+        .select()
+        .single()
 
-    if (error) return { success: false, message: error.message }
+    if (error) {
+        console.error("Role update failed:", error)
+        return { success: false, message: error.message }
+    }
 
     revalidatePath('/dashboard/president')
     return { success: true, message: `User role updated to ${newRole}.` }
