@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/utils/supabase/client'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
+import { healProfile } from '@/app/profile/actions'
 
 export interface Profile {
     id: string
@@ -48,11 +49,12 @@ export function useProfile() {
             // We dynamically import the server action to avoid bundling issues if possible, 
             // or just call it if allowed in client components. 
             // Since it's a server action, it's fine.
+            // TRIGGER AUTO-HEAL (Fire and Forget)
             const user = session.user
             if (!profile.email || !profile.name || !profile.avatar_url) {
-                import('@/app/profile/actions').then(({ healProfile }) => {
-                    healProfile(user.id, user.user_metadata, user.email || '')
-                }).catch(err => console.error("Auto-heal trigger failed:", err))
+                console.log("Triggering Auto-Heal for:", user.email)
+                healProfile(user.id, user.user_metadata, user.email || '')
+                    .catch(err => console.error("Auto-heal trigger failed:", err))
             }
 
             return {

@@ -28,8 +28,8 @@ export async function GET(request: Request) {
                         const name = metadata.name || metadata.full_name || user.email?.split('@')[0] || 'User'
                         const avatarUrl = metadata.avatar_url || metadata.picture || null
 
-                        // Try normal insert first
-                        const { error: insertError } = await supabase.from('profiles').insert({
+                        // Try normal upsert first to handle race conditions or existing rows
+                        const { error: insertError } = await supabase.from('profiles').upsert({
                             id: user.id,
                             name: name,
                             email: user.email,
@@ -39,14 +39,14 @@ export async function GET(request: Request) {
                         })
 
                         if (insertError) {
-                            // If normal insert fails (e.g. RLS), try admin
+                            // If normal upsert fails (e.g. RLS), try admin
                             // Verify user is still defined (TS check)
                             if (user) {
                                 try {
-                                    // Dynamically import to avoid circular dependencies or weird server/client mismatches if any
+                                    // Dynamically import to avoid circular dependencies
                                     const { createAdminClient } = await import('@/utils/supabase/server')
                                     const adminSupabase = createAdminClient()
-                                    await adminSupabase.from('profiles').insert({
+                                    await adminSupabase.from('profiles').upsert({
                                         id: user.id,
                                         name: name,
                                         email: user.email,
