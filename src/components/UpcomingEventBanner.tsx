@@ -22,9 +22,9 @@ export function UpcomingEventBanner() {
                 .gt('date', now)
                 .order('date', { ascending: true })
                 .limit(1)
-                .single()
 
-            if (data) setEvent(data)
+            const upcomingEvent = data?.[0] ?? null
+            if (upcomingEvent) setEvent(upcomingEvent)
         }
         fetchNextEvent()
     }, [])
