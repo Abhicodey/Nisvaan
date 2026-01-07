@@ -27,14 +27,14 @@ export default function LoginPage() {
             }
             const res = await signup(formData)
             if (res?.success) {
-                router.push('/profile')
+                router.push('/')
             } else {
                 alert(res?.error || "Signup failed")
             }
         } else {
             const res = await login(formData)
             if (res?.success) {
-                router.push('/profile')
+                router.push('/') // Redirect login to home as well for better UX
             } else {
                 alert(res?.error || "Login failed")
             }
@@ -72,7 +72,7 @@ export default function LoginPage() {
                         onClick={() => setMode('login')}
                         className={`flex-1 relative z-10 py-2.5 text-sm font-semibold transition-colors text-center ${mode === 'login' ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
                     >
-                        Log In
+                        Login
                     </button>
                     <button
                         onClick={() => setMode('signup')}
@@ -169,7 +169,7 @@ export default function LoginPage() {
                             disabled={loading}
                             className="w-full py-3 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 mt-6 disabled:opacity-70 disabled:cursor-not-allowed"
                         >
-                            {loading ? 'Processing...' : (mode === 'login' ? 'Sign In' : 'Create Account')}
+                            {loading ? 'Processing...' : (mode === 'login' ? 'Login' : 'Create Account')}
                         </button>
                     </form>
 

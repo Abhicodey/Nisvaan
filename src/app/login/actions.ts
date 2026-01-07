@@ -104,6 +104,7 @@ export async function signup(formData: FormData) {
             .upsert({
                 id: data.user.id,
                 name: fullName,
+                email: email,
                 age: parseInt(age),
                 role: 'user', // Default
             })
