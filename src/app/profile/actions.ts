@@ -8,7 +8,7 @@ const profileSchema = z.object({
     fullName: z.string().min(2, "Name must be at least 2 characters"),
     age: z.coerce.number().min(13, "You must be at least 13").max(120, "Invalid age").nullable().optional(),
     bio: z.string().max(1000, "Bio must be less than 1000 characters").optional(),
-    avatarUrl: z.string().optional(),
+    avatarUrl: z.string().nullable().optional(),
 })
 
 export async function updateProfile(prevState: any, formData: FormData) {
