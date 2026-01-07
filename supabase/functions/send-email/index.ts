@@ -7,13 +7,13 @@ const corsHeaders = {
 }
 
 interface EmailRequest {
-    type: 'join_application' | 'anonymous_message'
+    type: 'join_application' | 'anonymous_message' | 'contact_message'
     name?: string
     email?: string
     phone?: string
     college?: string
-    course?: string
     year?: string
+    course?: string
     location?: string
     interest?: string
     reason?: string
@@ -87,6 +87,20 @@ serve(async (req) => {
           ${(payload.message || '').replace(/\n/g, '<br>')}
         </blockquote>
         <p><em>This message was submitted anonymously via the website.</em></p>
+      `
+        } else if (type === 'contact_message') {
+            subject = `New Contact Message – Nisvaan`
+            replyTo = payload.email
+            html = `
+        <h1>New Contact Message</h1>
+        <p><strong>Name:</strong> ${payload.name}</p>
+        <p><strong>Email:</strong> ${payload.email}</p>
+        <p><strong>Timestamp:</strong> ${new Date().toISOString()}</p>
+        <hr />
+        <p><strong>Message:</strong></p>
+        <blockquote style="background: #f9f9f9; border-left: 10px solid #ccc; margin: 1.5em 10px; padding: 0.5em 10px;">
+          ${(payload.message || '').replace(/\n/g, '<br>')}
+        </blockquote>
       `
         } else {
             throw new Error('Invalid email type')

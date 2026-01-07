@@ -6,6 +6,7 @@ import { z } from 'zod'
 
 const profileSchema = z.object({
     fullName: z.string().min(2, "Name must be at least 2 characters"),
+    email: z.string().email("Invalid email").optional().nullable(),
     age: z.coerce.number().min(13, "You must be at least 13").max(120, "Invalid age").nullable().optional(),
     bio: z.string().max(1000, "Bio must be less than 1000 characters").optional(),
     avatarUrl: z.string().nullable().optional(),
@@ -14,6 +15,7 @@ const profileSchema = z.object({
 export async function updateProfile(prevState: any, formData: FormData) {
     const rawData = {
         fullName: formData.get('fullName'),
+        email: formData.get('email'),
         age: formData.get('age'),
         bio: formData.get('bio'),
         avatarUrl: formData.get('avatarUrl'),
@@ -35,7 +37,7 @@ export async function updateProfile(prevState: any, formData: FormData) {
         }
     }
 
-    const { fullName, age, bio, avatarUrl } = validatedFields.data
+    const { fullName, email, age, bio, avatarUrl } = validatedFields.data
 
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
@@ -49,6 +51,10 @@ export async function updateProfile(prevState: any, formData: FormData) {
         name: fullName,
         age: age,
         bio: bio,
+    }
+
+    if (email) {
+        profileData.email = email
     }
 
     if (avatarUrl) {

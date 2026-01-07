@@ -36,7 +36,7 @@ export async function GET(request: Request) {
                             avatar_url: avatarUrl,
                             role: 'user',
                             status: 'active'
-                        } as any)
+                        })
 
                         if (insertError) {
                             // If normal insert fails (e.g. RLS), try admin
@@ -53,7 +53,7 @@ export async function GET(request: Request) {
                                         avatar_url: avatarUrl,
                                         role: 'user',
                                         status: 'active'
-                                    } as any)
+                                    })
                                 } catch (adminErr) {
                                     console.error("Admin profile creation failed:", adminErr)
                                 }

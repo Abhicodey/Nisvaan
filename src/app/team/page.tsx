@@ -1,8 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Mail, Instagram, Linkedin, Send } from "lucide-react"
+import { Mail, Instagram, Linkedin, Send, Loader2 } from "lucide-react"
+import { useFormState } from "react-dom"
+import { submitContactForm } from "./actions"
+import { toast } from "sonner"
 
 const teamMembers = [
   {
@@ -78,9 +81,28 @@ export default function TeamPage() {
     message: "",
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    alert("Thank you for your message! We'll get back to you soon.")
+  const [state, formAction] = useFormState(submitContactForm, {
+    success: false,
+    message: "",
+  })
+
+  const [isPending, setIsPending] = useState(false)
+
+  useEffect(() => {
+    if (state.message) {
+      setIsPending(false)
+      if (state.success) {
+        toast.success(state.message)
+        setFormData({ name: "", email: "", message: "" })
+      } else {
+        toast.error(state.message)
+      }
+    }
+  }, [state])
+
+  const handleSubmit = (formData: FormData) => {
+    setIsPending(true)
+    formAction(formData)
   }
 
   return (
@@ -219,12 +241,13 @@ export default function TeamPage() {
                 <h3 className="text-2xl font-serif font-semibold text-foreground mb-6">
                   Send Us a Message
                 </h3>
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form action={handleSubmit} className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-2">
                       Your Name
                     </label>
                     <input
+                      name="name"
                       type="text"
                       required
                       value={formData.name}
@@ -238,6 +261,7 @@ export default function TeamPage() {
                       Email
                     </label>
                     <input
+                      name="email"
                       type="email"
                       required
                       value={formData.email}
@@ -251,6 +275,7 @@ export default function TeamPage() {
                       Message
                     </label>
                     <textarea
+                      name="message"
                       rows={5}
                       required
                       value={formData.message}
@@ -261,11 +286,18 @@ export default function TeamPage() {
                   </div>
                   <button
                     type="submit"
-                    className="w-full px-6 py-3 rounded-full bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-all duration-300 flex items-center justify-center gap-2"
+                    disabled={isPending}
+                    className="w-full px-6 py-3 rounded-full bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                   >
-                    <Send className="w-4 h-4" />
-                    Send Message
+                    {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                    {isPending ? "Sending..." : "Send Message"}
                   </button>
+                  {state?.message && !state.success && (
+                    <p className="text-red-500 text-sm text-center mt-2">{state.message}</p>
+                  )}
+                  {state?.success && (
+                    <p className="text-green-500 text-sm text-center mt-2">{state.message}</p>
+                  )}
                 </form>
               </div>
             </motion.div>

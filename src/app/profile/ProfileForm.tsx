@@ -13,6 +13,7 @@ import { useRouter } from 'next/navigation'
 interface ProfileFormProps {
     profile: {
         name: string | null
+        email: string | null
         age: number | null
         bio: string | null
         avatar_url: string | null
@@ -33,9 +34,10 @@ export default function ProfileForm({ profile, userEmail }: ProfileFormProps) {
     const [avatarUrl, setAvatarUrl] = useState<string | null>(profile?.avatar_url || null)
 
     // Editable fields state
-    type FieldName = 'fullName' | 'age' | 'bio'
+    type FieldName = 'fullName' | 'age' | 'bio' | 'email'
     const [formData, setFormData] = useState({
         fullName: profile?.name || '',
+        email: profile?.email || userEmail || '',
         age: profile?.age?.toString() || '',
         bio: profile?.bio || ''
     })
@@ -104,6 +106,7 @@ export default function ProfileForm({ profile, userEmail }: ProfileFormProps) {
 
         const data = new FormData()
         data.append('fullName', formData.fullName)
+        data.append('email', formData.email)
         data.append('age', formData.age)
         data.append('bio', formData.bio)
         if (avatarUrl) data.append('avatarUrl', avatarUrl)
@@ -232,7 +235,25 @@ export default function ProfileForm({ profile, userEmail }: ProfileFormProps) {
                                     </h1>
                                 )}
 
-                                <p className="text-sm font-medium text-muted-foreground">{userEmail}</p>
+                                {editingField === 'email' ? (
+                                    <input
+                                        autoFocus
+                                        value={formData.email}
+                                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                        onBlur={() => handleSave('email')}
+                                        onKeyDown={(e) => handleKeyDown(e, 'email')}
+                                        className="text-sm font-medium text-center bg-transparent border-b border-primary focus:border-primary outline-none text-foreground w-full pb-1"
+                                        placeholder="your@email.com"
+                                    />
+                                ) : (
+                                    <p
+                                        onClick={() => setEditingField('email')}
+                                        className="text-sm font-medium text-muted-foreground cursor-pointer hover:text-primary transition-colors flex items-center justify-center gap-2 group/email"
+                                    >
+                                        {formData.email || userEmail || "Add Email"}
+                                        <Pencil className="w-3 h-3 opacity-0 group-hover/email:opacity-50 text-muted-foreground" />
+                                    </p>
+                                )}
                             </div>
 
                             {/* Role Badge */}
