@@ -236,13 +236,6 @@ export function Navbar() {
                 {user ? (
                   <>
                     <Link
-                      href="/profile"
-                      onClick={() => setIsOpen(false)}
-                      className="px-4 py-2 text-sm font-medium text-foreground hover:bg-secondary/50 rounded-lg"
-                    >
-                      Profile ({profile?.name || 'User'})
-                    </Link>
-                    <Link
                       href={getDashboardLink()}
                       onClick={() => setIsOpen(false)}
                       className="px-4 py-2 text-sm font-medium text-foreground hover:bg-secondary/50 rounded-lg"
@@ -253,6 +246,28 @@ export function Navbar() {
                           {notificationCount}
                         </span>
                       )}
+                    </Link>
+                    <Link
+                      href="/profile"
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-foreground hover:bg-secondary/50 rounded-lg"
+                    >
+                      <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-primary/20 to-secondary flex items-center justify-center overflow-hidden border border-primary/20 shadow-sm">
+                        {profile?.avatar_url ? (
+                          <Image
+                            src={profile.avatar_url}
+                            alt="Avatar"
+                            width={24}
+                            height={24}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <span className="text-xs font-serif font-bold text-primary">
+                            {(profile?.name || user.email)?.charAt(0).toUpperCase()}
+                          </span>
+                        )}
+                      </div>
+                      Profile
                     </Link>
                     <button
                       onClick={() => { handleSignOut(); setIsOpen(false); }}
