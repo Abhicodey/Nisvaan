@@ -7,7 +7,7 @@ const values = [
   {
     icon: Scale,
     title: "Equality",
-    description: "At its core, feminism advocates for equal rights and opportunities for all genders. It's not about superiority — it's about recognizing that every person deserves the same respect, opportunities, and treatment regardless of gender.",
+    description: "At its core, feminism advocates for equal rights and opportunities for all genders. It's not about superiority - it's about recognizing that every person deserves the same respect, opportunities, and treatment regardless of gender.",
     color: "from-lavender/40 to-lavender/10",
   },
   {
@@ -19,7 +19,7 @@ const values = [
   {
     icon: Heart,
     title: "Inclusivity",
-    description: "Our feminism welcomes everyone — regardless of gender identity, background, or beliefs. We believe that the movement for equality grows stronger when it embraces diverse voices and experiences.",
+    description: "Our feminism welcomes everyone - regardless of gender identity, background, or beliefs. We believe that the movement for equality grows stronger when it embraces diverse voices and experiences.",
     color: "from-rose/40 to-rose/10",
   },
   {
@@ -33,7 +33,7 @@ const values = [
 const misconceptions = [
   {
     myth: "Feminism is about hating men",
-    truth: "Feminism is about achieving equality for all genders. It challenges harmful systems, not individuals. Many feminists actively work alongside men to dismantle toxic masculinity and create healthier norms for everyone.",
+    truth: "Feminism is about achieving equality for all genders. It challenges harmful systems, not individuals. Many feminists actively work alongside men to dismantle patriarchy, fight toxic masculinity and create healthier norms for everyone.",
   },
   {
     myth: "Feminism is no longer needed",
@@ -45,22 +45,22 @@ const misconceptions = [
   },
   {
     myth: "You can't be feminine and feminist",
-    truth: "Feminism is about choice and freedom from imposed expectations. Whether you embrace traditional femininity, reject it, or create your own expression — that's your choice to make.",
+    truth: "Feminism is about choice and freedom from imposed expectations. Whether you embrace traditional femininity, reject it, or create your own expression - that's your choice to make.",
   },
 ]
 
 const quotes = [
   {
-    text: "Feminism isn't about making women stronger. Women are already strong. It's about changing the way the world perceives that strength.",
-    author: "G.D. Anderson",
+    text: "As long as she thinks of a man, nobody objects to a woman thinking.",
+    author: "Virginia Woolf, \"Orlando\"",
   },
   {
-    text: "A feminist is anyone who recognizes the equality and full humanity of women and men.",
-    author: "Gloria Steinem",
+    text: "I am not free while any woman is unfree, even when her shackles are very different from my own.",
+    author: "Audre Lorde",
   },
   {
-    text: "We cannot all succeed when half of us are held back.",
-    author: "Malala Yousafzai",
+    text: "No woman can call herself free who does not control her own body.",
+    author: "Margaret Sanger",
   },
 ]
 
@@ -82,7 +82,7 @@ export default function StandForPage() {
               What We <span className="text-primary">Stand For</span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-              Understanding feminism — its history, purpose, and the values that guide our movement toward equality.
+              Understanding feminism - its history, purpose, and the values that guide our movement toward equality.
             </p>
           </motion.div>
         </div>
@@ -101,7 +101,7 @@ export default function StandForPage() {
               Understanding Feminism
             </h2>
             <p className="text-muted-foreground mb-4">
-              Feminism, at its essence, is the belief in and advocacy for the political, economic, and social equality of all genders. It emerged from centuries of women&apos;s struggle for basic rights — the right to vote, to own property, to work, and to be treated as full human beings.
+              Feminism, at its essence, is the belief in and advocacy for the political, economic, and social equality of all genders. It emerged from centuries of women&apos;s struggle for basic rights - the right to vote, to own property, to work, and to be treated as full human beings.
             </p>
             <p className="text-muted-foreground">
               Today&apos;s feminism builds on this legacy while expanding its vision to include all forms of gender-based inequality and the intersecting systems of oppression that affect different communities.
@@ -214,7 +214,7 @@ export default function StandForPage() {
                 <p className="font-serif text-lg text-foreground mb-4 italic">
                   &quot;{quote.text}&quot;
                 </p>
-                <p className="text-primary font-medium">— {quote.author}</p>
+                <p className="text-primary font-medium">- {quote.author}</p>
               </motion.div>
             ))}
           </div>

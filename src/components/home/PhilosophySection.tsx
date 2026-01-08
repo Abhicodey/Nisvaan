@@ -49,7 +49,7 @@ export function PhilosophySection() {
                                     <p className="font-serif text-2xl text-foreground italic">
                                         &quot;Empower through empathy&quot;
                                     </p>
-                                    <p className="text-muted-foreground mt-2">— Nisvaan</p>
+                                    <p className="text-muted-foreground mt-2">- Nisvaan</p>
                                 </div>
                             </div>
                         </div>

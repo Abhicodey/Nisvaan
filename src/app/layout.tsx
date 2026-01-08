@@ -15,6 +15,8 @@ export const metadata: Metadata = {
   description: "A student-led platform promoting feminism, equality, and open dialogue at Banaras Hindu University.",
 };
 
+import { StartupAnimation } from "@/components/StartupAnimation";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -47,6 +49,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
+            <StartupAnimation />
             <SecurityCheck />
             <Navbar />
             <main className="min-h-screen pt-16">

@@ -137,7 +137,7 @@ export default async function VoicesPage({
             Your Story Matters
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Whether it&apos;s a personal reflection, a creative piece, or an opinion you want to share — this platform is yours.
+            Whether it&apos;s a personal reflection, a creative piece, or an opinion you want to share - this platform is yours.
           </p>
         </div>
       </section>

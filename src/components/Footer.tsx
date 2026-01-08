@@ -10,7 +10,7 @@ export function Footer() {
           <div className="md:col-span-2">
             <h3 className="text-2xl font-serif font-semibold text-primary mb-4">Nisvaan</h3>
             <p className="text-muted-foreground max-w-md">
-              The Feminist Gender Dialogue Society of BHU — promoting equality, empathy, and open dialogue through meaningful conversations.
+              The Feminist Gender Dialogue, promoting equality, support and fighting patriarchy all the way.
             </p>
             <p className="mt-4 text-sm text-muted-foreground italic">
               &quot;Voices of change begin with dialogue.&quot;
@@ -89,7 +89,7 @@ export function Footer() {
         </div>
 
         <div className="mt-8 pt-8 border-t border-border text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Nisvaan — BHU. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Nisvaan - BHU. All rights reserved.</p>
           <p className="mt-1">Empower through empathy.</p>
         </div>
       </div>

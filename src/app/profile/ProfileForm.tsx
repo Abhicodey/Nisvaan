@@ -173,10 +173,10 @@ export default function ProfileForm({ profile, userEmail }: ProfileFormProps) {
                            Changed bg-card/40 to bg-[#121212] (solid darker color).
                            Added distinct border and shadow.
                         */}
-                        <div className="bg-[#121212] border border-white/10 rounded-3xl p-8 flex flex-col items-center text-center shadow-2xl relative overflow-hidden group">
+                        <div className="bg-white dark:bg-[#121212] border border-border dark:border-white/10 rounded-3xl p-8 flex flex-col items-center text-center shadow-2xl relative overflow-hidden group">
 
                             {/* Card Glow */}
-                            <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
+                            <div className="absolute inset-0 bg-gradient-to-b from-black/5 dark:from-white/5 to-transparent pointer-events-none" />
 
                             {/* Status Banner */}
                             {profile?.moderation_state && profile.moderation_state !== 'normal' && (
@@ -187,11 +187,11 @@ export default function ProfileForm({ profile, userEmail }: ProfileFormProps) {
 
                             {/* Avatar */}
                             <div className="relative mb-6 cursor-pointer group/avatar" onClick={() => fileInputRef.current?.click()}>
-                                <div className="w-40 h-40 rounded-full border-4 border-[#121212] shadow-2xl overflow-hidden relative z-10 bg-secondary mx-auto ring-1 ring-white/10">
+                                <div className="w-40 h-40 rounded-full border-4 border-white dark:border-[#121212] shadow-2xl overflow-hidden relative z-10 bg-secondary mx-auto ring-1 ring-black/10 dark:ring-white/10">
                                     {avatarUrl ? (
                                         <Image src={avatarUrl} alt="Avatar" fill className="object-cover transition-transform duration-500 group-hover/avatar:scale-105" />
                                     ) : (
-                                        <div className="w-full h-full flex items-center justify-center bg-zinc-900 text-5xl font-serif text-muted-foreground">
+                                        <div className="w-full h-full flex items-center justify-center bg-zinc-100 dark:bg-zinc-900 text-5xl font-serif text-muted-foreground">
                                             {(formData.fullName || userEmail)?.charAt(0).toUpperCase()}
                                         </div>
                                     )}
@@ -259,15 +259,15 @@ export default function ProfileForm({ profile, userEmail }: ProfileFormProps) {
                             {/* Role Badge */}
                             <div className="mb-8">
                                 {profile?.role === 'president' ? (
-                                    <span className="px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-500 text-xs font-bold uppercase tracking-[0.2em] shadow-[0_0_15px_-3px_rgba(245,158,11,0.2)]">
+                                    <span className="px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-500 text-xs font-bold uppercase tracking-[0.2em] shadow-[0_0_15px_-3px_rgba(245,158,11,0.2)]">
                                         President
                                     </span>
                                 ) : profile?.role === 'media_manager' ? (
-                                    <span className="px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-bold uppercase tracking-[0.2em] shadow-[0_0_15px_-3px_rgba(59,130,246,0.2)]">
+                                    <span className="px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-500 dark:text-blue-400 text-xs font-bold uppercase tracking-[0.2em] shadow-[0_0_15px_-3px_rgba(59,130,246,0.2)]">
                                         Media Manager
                                     </span>
                                 ) : (
-                                    <span className="px-4 py-1.5 rounded-full bg-zinc-800 border border-white/10 text-zinc-400 text-xs font-bold uppercase tracking-[0.2em]">
+                                    <span className="px-4 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 border border-border dark:border-white/10 text-muted-foreground dark:text-zinc-400 text-xs font-bold uppercase tracking-[0.2em]">
                                         Member
                                     </span>
                                 )}
@@ -276,7 +276,7 @@ export default function ProfileForm({ profile, userEmail }: ProfileFormProps) {
                             {/* Sign Out */}
                             <button
                                 onClick={handleLogout}
-                                className="w-full py-3 rounded-xl border border-white/5 bg-white/5 hover:bg-destructive/10 hover:text-destructive hover:border-destructive/20 transition-all text-sm font-medium flex items-center justify-center gap-2 group/logout text-muted-foreground"
+                                className="w-full py-3 rounded-xl border border-black/5 dark:border-white/5 bg-black/5 dark:bg-white/5 hover:bg-destructive/10 hover:text-destructive hover:border-destructive/20 transition-all text-sm font-medium flex items-center justify-center gap-2 group/logout text-muted-foreground"
                             >
                                 <LogOut className="w-4 h-4 transition-transform group-hover/logout:-translate-x-1" />
                                 Sign Out
@@ -302,7 +302,7 @@ export default function ProfileForm({ profile, userEmail }: ProfileFormProps) {
                         </div>
 
                         {/* Bio Section - SOLID */}
-                        <section className="bg-[#121212] border border-white/10 rounded-3xl p-8 md:p-10 relative group hover:border-primary/20 transition-colors shadow-lg">
+                        <section className="bg-white dark:bg-[#121212] border border-border dark:border-white/10 rounded-3xl p-8 md:p-10 relative group hover:border-primary/20 transition-colors shadow-lg">
                             <div className="flex items-center justify-between mb-6">
                                 <h3 className="text-xl font-serif font-semibold text-foreground flex items-center gap-2">
                                     <span className="text-2xl">✍️</span> Your Story
@@ -325,7 +325,7 @@ export default function ProfileForm({ profile, userEmail }: ProfileFormProps) {
                                         onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                                         onBlur={() => handleSave('bio')}
                                         onKeyDown={(e) => handleKeyDown(e, 'bio')}
-                                        className="w-full bg-black/20 p-6 rounded-xl border border-primary/30 text-lg leading-relaxed text-foreground font-serif outline-none focus:ring-2 focus:ring-primary/20 min-h-[200px]"
+                                        className="w-full bg-zinc-50 dark:bg-black/20 p-6 rounded-xl border border-primary/30 text-lg leading-relaxed text-foreground font-serif outline-none focus:ring-2 focus:ring-primary/20 min-h-[200px]"
                                         placeholder="Share a bit about your journey, interests, or what feminism means to you..."
                                     />
                                     <div className="flex justify-end gap-2">
@@ -350,7 +350,7 @@ export default function ProfileForm({ profile, userEmail }: ProfileFormProps) {
                         {/* Details Grid */}
                         <div className="grid sm:grid-cols-2 gap-6">
                             {/* Age Card - SOLID */}
-                            <section className="bg-[#121212] border border-white/10 rounded-3xl p-6 group hover:border-primary/20 transition-colors shadow-lg" onClick={() => setEditingField('age')}>
+                            <section className="bg-white dark:bg-[#121212] border border-border dark:border-white/10 rounded-3xl p-6 group hover:border-primary/20 transition-colors shadow-lg" onClick={() => setEditingField('age')}>
                                 <div className="flex items-start justify-between">
                                     <div>
                                         <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-1">Age</h4>
@@ -363,7 +363,7 @@ export default function ProfileForm({ profile, userEmail }: ProfileFormProps) {
                                                     onChange={(e) => setFormData({ ...formData, age: e.target.value })}
                                                     onBlur={() => handleSave('age')}
                                                     onKeyDown={(e) => handleKeyDown(e, 'age')}
-                                                    className="w-20 bg-black/20 px-3 py-1 rounded border border-primary/50 text-xl font-medium outline-none text-foreground"
+                                                    className="w-20 bg-zinc-50 dark:bg-black/20 px-3 py-1 rounded border border-primary/50 text-xl font-medium outline-none text-foreground"
                                                     placeholder="25"
                                                     onClick={(e) => e.stopPropagation()}
                                                 />
@@ -374,14 +374,14 @@ export default function ProfileForm({ profile, userEmail }: ProfileFormProps) {
                                             </p>
                                         )}
                                     </div>
-                                    <div className="p-3 bg-zinc-900 rounded-full text-zinc-400">
+                                    <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-full text-muted-foreground dark:text-zinc-400">
                                         <User className="w-5 h-5" />
                                     </div>
                                 </div>
                             </section>
 
                             {/* Member Status Card - SOLID */}
-                            <section className="bg-[#121212] border border-white/10 rounded-3xl p-6 shadow-lg">
+                            <section className="bg-white dark:bg-[#121212] border border-border dark:border-white/10 rounded-3xl p-6 shadow-lg">
                                 <div className="flex items-start justify-between">
                                     <div>
                                         <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-1">Member Status</h4>
@@ -389,7 +389,7 @@ export default function ProfileForm({ profile, userEmail }: ProfileFormProps) {
                                             Active
                                         </p>
                                     </div>
-                                    <div className="p-3 bg-green-900/20 text-green-500 rounded-full">
+                                    <div className="p-3 bg-green-500/10 dark:bg-green-900/20 text-green-600 dark:text-green-500 rounded-full">
                                         <Check className="w-5 h-5" />
                                     </div>
                                 </div>
