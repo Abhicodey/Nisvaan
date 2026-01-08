@@ -12,7 +12,6 @@ import { useProfile } from "@/hooks/useProfile"
 import { NavbarSkeleton } from "@/components/ui/skeletons"
 
 const publicLinks = [
-  { href: "/", label: "Home" },
   { href: "/about", label: "About Us" },
   { href: "/stand-for", label: "Stand For" },
   { href: "/events", label: "Events" },

@@ -7,11 +7,18 @@ export function StartupAnimation() {
     const [isVisible, setIsVisible] = useState(true)
 
     useEffect(() => {
+        // Lock scroll
+        document.body.style.overflow = "hidden"
+
         // Hide animation after completion
         const timer = setTimeout(() => {
             setIsVisible(false)
+            document.body.style.overflow = "unset"
         }, 3500)
-        return () => clearTimeout(timer)
+        return () => {
+            clearTimeout(timer)
+            document.body.style.overflow = "unset"
+        }
     }, [])
 
     const container = {
@@ -31,7 +38,7 @@ export function StartupAnimation() {
             y: 0,
             opacity: 1,
             filter: "blur(0px)",
-            transition: { duration: 0.8, ease: [0.2, 0.65, 0.3, 0.9] }
+            transition: { duration: 0.8, ease: "circOut" }
         },
     }
 
