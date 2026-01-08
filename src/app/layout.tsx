@@ -20,10 +20,17 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "Nisvaan – The Feminist Gender Dialogue Society of BHU",
   description: "A student-led platform promoting feminism, equality, and open dialogue at Banaras Hindu University.",
-  manifest: "/manifest.json",
+  manifest: "/manifest.json?v=2",
   icons: {
-    icon: "/logo.png",
-    apple: "/logo.png",
+    icon: [
+      { url: "/logo.png?v=2" },
+      { url: "/logo.png?v=2", sizes: "192x192", type: "image/png" },
+      { url: "/logo.png?v=2", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/logo.png?v=2" },
+      { url: "/logo.png?v=2", sizes: "180x180", type: "image/png" },
+    ],
   },
   appleWebApp: {
     capable: true,
