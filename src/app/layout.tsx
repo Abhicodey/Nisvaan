@@ -13,9 +13,11 @@ import { SecurityCheck } from "@/components/SecurityCheck";
 export const metadata: Metadata = {
   title: "Nisvaan – The Feminist Gender Dialogue Society of BHU",
   description: "A student-led platform promoting feminism, equality, and open dialogue at Banaras Hindu University.",
+  manifest: "/manifest.json",
 };
 
 import { StartupAnimation } from "@/components/StartupAnimation";
+import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 
 export default function RootLayout({
   children,
@@ -51,6 +53,7 @@ export default function RootLayout({
           >
             <StartupAnimation />
             <SecurityCheck />
+            <PWAInstallPrompt />
             <Navbar />
             <main className="min-h-screen pt-16">
               {children}
