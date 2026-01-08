@@ -2,6 +2,7 @@
     "name": "Nisvaan",
     "short_name": "Nisvaan",
     "start_url": "/",
+    "scope": "/",
     "display": "standalone",
     "background_color": "#09090B",
     "theme_color": "#09090B",

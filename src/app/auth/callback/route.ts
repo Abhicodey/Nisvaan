@@ -12,6 +12,10 @@ export async function GET(request: Request) {
         const supabase = await createClient()
         const { error } = await supabase.auth.exchangeCodeForSession(code)
 
+        if (error) {
+            console.error("Auth Callback Error:", error)
+        }
+
         if (!error) {
             // Manual Profile Creation (Self-Healing)
             try {
