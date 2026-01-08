@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import ErrorReporter from "@/components/ErrorReporter";
 import Script from "next/script";
@@ -10,10 +10,26 @@ import { Toaster } from "@/components/ui/sonner";
 
 import { SecurityCheck } from "@/components/SecurityCheck";
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#09090B",
+};
+
 export const metadata: Metadata = {
   title: "Nisvaan – The Feminist Gender Dialogue Society of BHU",
   description: "A student-led platform promoting feminism, equality, and open dialogue at Banaras Hindu University.",
   manifest: "/manifest.json",
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Nisvaan",
+  },
 };
 
 import { StartupAnimation } from "@/components/StartupAnimation";
@@ -55,7 +71,7 @@ export default function RootLayout({
             <SecurityCheck />
             <PWAInstallPrompt />
             <Navbar />
-            <main className="min-h-screen pt-16">
+            <main className="min-h-screen pt-16 pb-24 lg:pb-0">
               {children}
             </main>
             <Footer />
