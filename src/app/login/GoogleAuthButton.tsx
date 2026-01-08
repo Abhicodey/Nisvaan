@@ -8,12 +8,17 @@ export function GoogleAuthButton() {
     const supabase = createClient()
 
     const handleLogin = async () => {
-        const redirectTo = `${window.location.origin}/auth/callback`
+        // Explicitly point to production URL to handle PWA context correctly
+        const redirectTo = 'https://nisvaan-bhu.vercel.app/auth/callback'
         console.log("OAuth Redirect To:", redirectTo)
         await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
                 redirectTo,
+                queryParams: {
+                    access_type: 'offline',
+                    prompt: 'consent',
+                },
             },
         })
     }
