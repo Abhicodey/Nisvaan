@@ -60,8 +60,8 @@ export default function AboutPage() {
               <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-lavender/20 rounded-3xl blur-2xl" />
               <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl">
                 <img
-                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Suffragettes_demonstration_in_London%2C_1910.jpg/1280px-Suffragettes_demonstration_in_London%2C_1910.jpg"
-                  alt="Suffragettes demonstration in London, 1910"
+                  src="/suffragettes_1913.jpg"
+                  alt="Woman Suffrage Procession, 1913"
                   className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000 ease-out scale-105 hover:scale-100"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
@@ -70,7 +70,7 @@ export default function AboutPage() {
                     &quot;Where every voice finds its echo&quot;
                   </p>
                   <p className="text-xs text-white/60 mt-2 uppercase tracking-widest">
-                    Suffragettes, London 1910
+                    Woman Suffrage Procession, 1913
                   </p>
                 </div>
               </div>
