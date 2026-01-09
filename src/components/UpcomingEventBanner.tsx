@@ -19,6 +19,7 @@ export function UpcomingEventBanner() {
                 .from('events')
                 .select('*')
                 .eq('is_hidden', false)
+                .eq('category', 'upcoming')
                 .gt('date', now)
                 .order('date', { ascending: true })
                 .limit(1)
