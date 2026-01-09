@@ -43,14 +43,17 @@ function CreateEventContent() {
                 return null
             }
 
-            const fileExt = file.name.split('.').pop()
+            const fileExt = file.name.split('.').pop()?.toLowerCase()
             const fileName = `event-${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
             const filePath = `events/${fileName}`
 
             try {
                 const { error: uploadError } = await supabase.storage
                     .from('event-media')
-                    .upload(filePath, file)
+                    .upload(filePath, file, {
+                        contentType: file.type,
+                        upsert: true
+                    })
 
                 if (uploadError) throw uploadError
 

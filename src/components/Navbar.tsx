@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { useProfile } from "@/hooks/useProfile"
 import { NavbarSkeleton } from "@/components/ui/skeletons"
+import { NotificationManager } from "@/components/NotificationManager"
 
 const publicLinks = [
   { href: "/about", label: "About Us" },
@@ -201,6 +202,7 @@ export function Navbar() {
               </Link>
             )}
 
+            <NotificationManager />
             <ThemeToggle />
           </div>
 

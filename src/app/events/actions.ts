@@ -109,6 +109,24 @@ export async function createEvent(prevState: any, formData: FormData) {
         }
     }
 
+    // Trigger Push Notifications (For both types, or just upcoming)
+    if (eventData) {
+        try {
+            await import('@/app/notifications/actions').then(({ sendNotificationToAll }) => {
+                const isUpcoming = eventType === 'upcoming'
+                sendNotificationToAll({
+                    title: isUpcoming ? `New Event: ${title}` : `New Gallery: ${title}`,
+                    body: isUpcoming
+                        ? `Join us on ${new Date(date as string).toLocaleDateString()} at ${location}`
+                        : `Check out highlights from our recent event!`,
+                    url: `/events/${eventData.id}`
+                })
+            })
+        } catch (error) {
+            console.error("Failed to send push notifications:", error)
+        }
+    }
+
     revalidatePath('/events')
     return { success: true, message: "Event created successfully!" }
 }
