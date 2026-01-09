@@ -56,21 +56,22 @@ export async function createEvent(prevState: any, formData: FormData) {
         return { success: false, message: "Insufficient permissions to create events." }
     }
 
+    const eventType = formData.get('eventType')
+
     const { data: eventData, error } = await supabase.from('events').insert({
         title,
         description,
         date,
         location,
         image_urls: validImageUrls || [],
-        created_by: user.id
+        created_by: user.id,
+        category: eventType || 'upcoming'
     }).select().single()
 
     if (error) {
         console.error("Create Event Error:", error)
         return { success: false, message: "Failed to create event." }
     }
-
-    const eventType = formData.get('eventType')
 
     // Trigger Email Notification (Only for upcoming events)
     if (eventType === 'upcoming' && eventData) {

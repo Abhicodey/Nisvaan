@@ -28,9 +28,10 @@ export default async function EventsPage() {
     .eq('is_hidden', false)
     .order('date', { ascending: true })
 
-  const now = new Date()
-  const upcomingEvents = events?.filter(e => new Date(e.date!) >= now) || []
-  const pastEvents = events?.filter(e => new Date(e.date!) < now).reverse() || [] // Reverse to show latest past events first
+    .order('date', { ascending: true })
+
+  const upcomingEvents = events?.filter(e => e.category === 'upcoming') || []
+  const pastEvents = events?.filter(e => e.category === 'past').reverse() || []
 
   return (
     <div className="min-h-screen pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">

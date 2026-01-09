@@ -29,6 +29,7 @@ export default async function Home() {
     .from('events')
     .select('*')
     .eq('is_hidden', false)
+    .eq('category', 'upcoming')
     .gte('date', now.toISOString()) // Only future events
     .order('date', { ascending: true })
     .limit(3)
