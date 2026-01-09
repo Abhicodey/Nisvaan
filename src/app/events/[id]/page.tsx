@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { ImageWithFallback } from "@/components/ui/image-with-fallback"
 
 export const dynamic = 'force-dynamic'
 
@@ -78,7 +79,7 @@ export default async function EventDetailsPage({ params }: { params: Promise<{ i
                                             isWide ? "md:col-span-2" : ""
                                         )}
                                     >
-                                        <Image
+                                        <ImageWithFallback
                                             src={url}
                                             alt={`Event highlight ${index + 1}`}
                                             fill
