@@ -113,11 +113,11 @@ export default function MediaDashboard() {
                         <Clock className="w-5 h-5 text-primary" />
                         Upcoming Events
                     </h2>
-                    {events.filter(e => new Date(e.date) > new Date()).length === 0 ? (
+                    {events.filter(e => e.category === 'upcoming').length === 0 ? (
                         <p className="text-muted-foreground italic">No upcoming events scheduled.</p>
                     ) : (
                         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                            {events.filter(e => new Date(e.date) > new Date()).map(event => (
+                            {events.filter(e => e.category === 'upcoming').map(event => (
                                 <div key={event.id} className={cn("bg-card border border-border rounded-xl overflow-hidden shadow-sm relative group", event.is_hidden && "opacity-75 border-dashed")}>
                                     <div className="aspect-video relative bg-secondary">
                                         {event.image_urls?.[0] ? (
@@ -170,11 +170,11 @@ export default function MediaDashboard() {
                         <CheckCircle className="w-5 h-5 text-secondary-foreground" />
                         Past Highlights
                     </h2>
-                    {events.filter(e => new Date(e.date) <= new Date()).length === 0 ? (
+                    {events.filter(e => e.category === 'past').length === 0 ? (
                         <p className="text-muted-foreground italic">No past events found.</p>
                     ) : (
                         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                            {events.filter(e => new Date(e.date) <= new Date()).map(event => (
+                            {events.filter(e => e.category === 'past').map(event => (
                                 <div key={event.id} className={cn("bg-card border border-border rounded-xl overflow-hidden shadow-sm relative group", event.is_hidden && "opacity-75 border-dashed")}>
                                     <div className="aspect-video relative bg-secondary">
                                         {event.image_urls?.[0] ? (
