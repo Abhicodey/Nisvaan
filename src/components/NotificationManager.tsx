@@ -71,6 +71,8 @@ export function NotificationManager() {
                 toast.success("Notifications enabled!")
             } else {
                 console.error("Backend subscription error:", result.error)
+                // Revert browser subscription if backend fails to keep states in sync
+                await sub.unsubscribe()
                 toast.error(`Subscription failed: ${result.error || "Unknown server error"}`)
             }
         } catch (error: any) {
