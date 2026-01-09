@@ -72,9 +72,9 @@ export function NotificationManager() {
             } else {
                 toast.error("Failed to save subscription.")
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error("Failed to subscribe the user: ", error)
-            toast.error("Failed to enable notifications.")
+            toast.error(error.message || "Unknown error")
         }
     }
 
