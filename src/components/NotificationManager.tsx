@@ -70,7 +70,8 @@ export function NotificationManager() {
                 setIsSubscribed(true)
                 toast.success("Notifications enabled!")
             } else {
-                toast.error("Failed to save subscription.")
+                console.error("Backend subscription error:", result.error)
+                toast.error(`Subscription failed: ${result.error || "Unknown server error"}`)
             }
         } catch (error: any) {
             console.error("Failed to subscribe the user: ", error)
