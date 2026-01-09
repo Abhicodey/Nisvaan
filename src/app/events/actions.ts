@@ -148,7 +148,9 @@ export async function uploadEventImages(formData: FormData) {
 
     try {
         const uploadPromises = files.map(async (file) => {
-            const fileExt = file.name.split('.').pop()
+            let fileExt = file.name.split('.').pop()?.toLowerCase()
+            if (fileExt === 'jpg') fileExt = 'jpeg'
+
             const fileName = `event-${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
             const filePath = `${fileName}`
 

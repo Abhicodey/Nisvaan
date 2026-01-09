@@ -33,7 +33,7 @@ export function NotificationManager() {
     const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null)
 
     useEffect(() => {
-        if (typeof window !== "undefined" && "serviceWorker" in navigator && window.workbox !== undefined) {
+        if (typeof window !== "undefined" && "serviceWorker" in navigator) {
             // Wait for service worker to be ready
             navigator.serviceWorker.ready.then((reg) => {
                 setRegistration(reg)
