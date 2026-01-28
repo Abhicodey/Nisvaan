@@ -60,8 +60,14 @@ export function StartupAnimation() {
                         {/* Logo Mark */}
                         <motion.div
                             variants={item}
-                            className="w-16 h-16 mb-8 rounded-full bg-gradient-to-tr from-primary to-secondary opacity-30 blur-lg"
-                        />
+                            className="w-24 h-24 mb-6 rounded-full overflow-hidden shadow-2xl relative"
+                        >
+                            <img
+                                src="/logo-updated.png"
+                                alt="Nisvaan Logo"
+                                className="w-full h-full object-cover"
+                            />
+                        </motion.div>
 
                         {/* Staggered Text */}
                         <div className="overflow-hidden">

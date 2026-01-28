@@ -113,7 +113,7 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2 group">
             <Image
-              src="/logo.png"
+              src="/logo-updated.png"
               alt="Nisvaan Logo"
               width={40}
               height={40}
