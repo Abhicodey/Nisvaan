@@ -60,7 +60,7 @@ export function StartupAnimation() {
                         {/* Logo Mark */}
                         <motion.div
                             variants={item}
-                            className="w-24 h-24 mb-6 rounded-full overflow-hidden shadow-2xl relative"
+                            className="w-48 h-48 mb-8 rounded-full overflow-hidden shadow-2xl relative"
                         >
                             <img
                                 src="/logo-updated.png"

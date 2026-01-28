@@ -115,9 +115,9 @@ export function Navbar() {
             <Image
               src="/logo-updated.png"
               alt="Nisvaan Logo"
-              width={40}
-              height={40}
-              className="w-10 h-10 object-contain rounded-full"
+              width={56}
+              height={56}
+              className="w-14 h-14 object-contain rounded-full"
             />
             <span className="text-2xl font-serif font-semibold text-primary group-hover:text-primary/80 transition-colors">Nisvaan</span>
           </Link>
