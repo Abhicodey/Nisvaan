@@ -117,9 +117,9 @@ export function Navbar() {
               alt="Nisvaan Logo"
               width={56}
               height={56}
-              className="w-14 h-14 object-contain rounded-full"
+              className="w-10 h-10 md:w-14 md:h-14 object-contain rounded-full transition-all duration-300"
             />
-            <span className="text-2xl font-serif font-semibold text-primary group-hover:text-primary/80 transition-colors">Nisvaan</span>
+            <span className="text-xl md:text-2xl font-serif font-semibold text-primary group-hover:text-primary/80 transition-colors">Nisvaan</span>
           </Link>
 
           {/* Desktop Nav */}

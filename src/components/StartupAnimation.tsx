@@ -60,7 +60,7 @@ export function StartupAnimation() {
                         {/* Logo Mark */}
                         <motion.div
                             variants={item}
-                            className="w-48 h-48 mb-8 rounded-full overflow-hidden shadow-2xl relative"
+                            className="w-32 h-32 md:w-48 md:h-48 mb-6 md:mb-8 rounded-full overflow-hidden shadow-2xl relative transition-all duration-500"
                         >
                             <img
                                 src="/logo-updated.png"
@@ -73,7 +73,7 @@ export function StartupAnimation() {
                         <div className="overflow-hidden">
                             <motion.h1
                                 variants={item}
-                                className="text-7xl md:text-9xl font-serif font-bold tracking-tighter text-foreground"
+                                className="text-5xl md:text-7xl lg:text-9xl font-serif font-bold tracking-tighter text-foreground"
                             >
                                 Nisvaan
                             </motion.h1>

@@ -61,7 +61,7 @@ export default async function EventDetailsPage({ params }: { params: Promise<{ i
                 {images.length > 0 && (
                     <section className="space-y-4">
                         <h2 className="text-2xl font-serif font-semibold">Gallery</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-[250px]">
+                        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-auto md:auto-rows-[250px]">
                             {images.map((url: string, index: number) => {
                                 // Dynamic classes for Bento Layout
                                 // First image: Large square (2x2)
@@ -74,8 +74,8 @@ export default async function EventDetailsPage({ params }: { params: Promise<{ i
                                     <div
                                         key={url}
                                         className={cn(
-                                            "relative rounded-xl overflow-hidden bg-secondary group",
-                                            isHero ? "md:col-span-2 md:row-span-2 min-h-[500px]" : "",
+                                            "relative rounded-xl overflow-hidden bg-secondary group aspect-square md:aspect-auto", // Force square on mobile
+                                            isHero ? "md:col-span-2 md:row-span-2 md:min-h-[500px]" : "",
                                             isWide ? "md:col-span-2" : ""
                                         )}
                                     >
